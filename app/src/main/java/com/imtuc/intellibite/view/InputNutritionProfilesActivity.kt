@@ -1,7 +1,5 @@
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -14,8 +12,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,23 +24,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.imtuc.intellibite.R
 import com.imtuc.intellibite.navigation.Screen
-import com.imtuc.intellibite.ui.theme.IntelliBiteTheme
 
 
 @Composable
-fun InputAllergiesActivity(navController: NavHostController) {
+fun InputNutritionProfilesActivity(navController: NavHostController) {
     val context = LocalContext.current
 
-    val availableAllergies = listOf("Cokelat", "Kacang", "Susu/Diary", "Telur")
+    val availableNutritionProfile = listOf("Sesame-Free", "Diabetes-Appropriate", "Nut-Free", "Dairy-Free")
 
-    var ownedAllergies by remember {
+    var ownedNutritionProfile by remember {
         mutableStateOf(emptyList<String>())
     }
 
@@ -71,16 +63,16 @@ fun InputAllergiesActivity(navController: NavHostController) {
                 .padding(top = 250.dp, start = 16.dp, end = 16.dp)
         ) {
             item {
-                Text("Choose Your Allergies")
+                Text("Choose Your Specific Conditions")
             }
-            items(availableAllergies) { allergies ->
-                AllergiesCheckbox(
-                    allergies = allergies,
+            items(availableNutritionProfile) { nutritionProfiles ->
+                DiseasesCheckbox(
+                    nutritionProfiles = nutritionProfiles,
                     onCheckedChange = { isChecked ->
                         if (isChecked) {
-                            ownedAllergies = ownedAllergies + allergies
+                            ownedNutritionProfile = ownedNutritionProfile + nutritionProfiles
                         } else {
-                            ownedAllergies = ownedAllergies - allergies
+                            ownedNutritionProfile = ownedNutritionProfile - nutritionProfiles
                         }
                     }
                 )
@@ -93,7 +85,7 @@ fun InputAllergiesActivity(navController: NavHostController) {
             item {
                 Button(
                     onClick = {
-                        navController.navigate(Screen.InputDiseases.route)
+                        navController.navigate(Screen.Result.route)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -107,7 +99,7 @@ fun InputAllergiesActivity(navController: NavHostController) {
 }
 
 @Composable
-fun AllergiesCheckbox(allergies: String, onCheckedChange: (Boolean) -> Unit) {
+fun DiseasesCheckbox(nutritionProfiles: String, onCheckedChange: (Boolean) -> Unit) {
     val (checkedState, onStateChange) = remember { mutableStateOf(false) }
 
     Row(
@@ -129,7 +121,7 @@ fun AllergiesCheckbox(allergies: String, onCheckedChange: (Boolean) -> Unit) {
 //            colors = CheckboxDefaults.colors(checkedColor = Color.Green) // Set checkbox color to green
         )
         Text(
-            text = allergies,
+            text = nutritionProfiles,
             modifier = Modifier.padding(start = 16.dp)
         )
     }

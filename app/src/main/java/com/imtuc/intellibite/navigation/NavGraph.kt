@@ -1,8 +1,7 @@
 package com.imtuc.intellibite.navigation
 
-import InputAllergiesActivity
-import InputDiseasesActivity
 import InputIngredientsActivity
+import InputNutritionProfilesActivity
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavHostController
@@ -35,14 +34,9 @@ fun SetupNavGraph(
         }
 
         composable(
-            route = Screen.InputDiseases.route
+            route = Screen.InputNutritionProfiles.route
         ) {
-            InputDiseasesActivity(navController = navController)
-        }
-        composable(
-            route = Screen.InputAllergies.route
-        ) {
-            InputAllergiesActivity(navController = navController)
+            InputNutritionProfilesActivity(navController = navController)
         }
         composable(
             route = Screen.Result.route,

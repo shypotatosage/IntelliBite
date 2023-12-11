@@ -93,7 +93,7 @@ fun InputIngredientsActivity(navController: NavHostController) {
             item {
                 Button(
                     onClick = {
-                        navController.navigate(Screen.InputDiseases.route)
+                        navController.navigate(Screen.InputNutritionProfiles.route)
                     },
                     modifier = Modifier
                         .fillMaxWidth()

@@ -3,13 +3,14 @@ package com.imtuc.intellibite.navigation
 sealed class Screen(val route: String) {
     object Splash:Screen(route = "splash_screen")
     object InputIngredients:Screen(route = "input_ingredients")
-    object InputDiseases:Screen(route = "input_diseases")
-    object InputAllergies:Screen(route = "input_allergies")
+    object InputNutritionProfiles:Screen(route = "input_nutrition_profiles")
     object Result:Screen(route = "result/{prediction}") {
         fun passParam(
-            allergies: String
+            allergies: String,
+            ingredients: String,
+            diseases: String,
         ): String {
-            return "result/$allergies"
+            return "result/$ingredients/$diseases/$allergies"
         }
     }
 }
