@@ -18,7 +18,6 @@ import com.imtuc.intellibite.ui.theme.IntelliBiteTheme
 class MainActivity : ComponentActivity() {
 
     lateinit var navController: NavHostController
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

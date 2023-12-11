@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.imtuc.intellibite.R
+import com.imtuc.intellibite.navigation.Screen
 import com.imtuc.intellibite.ui.theme.IntelliBiteTheme
 import kotlinx.coroutines.delay
 
@@ -53,8 +54,8 @@ fun SplashScreenActivity(navController: NavHostController) {
     LaunchedEffect(key1 = true) {
         startAnimation = true
         delay(3000)
-//        navController.popBackStack()
-//        navController.navigate(Screen.Login.route)
+        navController.popBackStack()
+        navController.navigate(Screen.InputIngredients.route)
     }
 
     SplashScreen(alphaAnimation.value)
