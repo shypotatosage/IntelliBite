@@ -41,12 +41,12 @@ fun SetupNavGraph(
         composable(
             route = Screen.Result.route,
             arguments = listOf(
-                navArgument("prediction") {
+                navArgument("results") {
                     type = NavType.StringType
                 }
             )
         ) {
-            ResultActivity(result = it.arguments?.getString("prediction").toString(), navController)
+            ResultActivity(result = it.arguments?.getString("results").toString(), navController)
         }
     }
 }
