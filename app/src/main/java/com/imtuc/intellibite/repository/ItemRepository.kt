@@ -2,6 +2,7 @@ package com.imtuc.intellibite.repository
 
 import com.imtuc.intellibite.model.Ingredients
 import com.imtuc.intellibite.model.Nutrition_Profiles
+import com.imtuc.intellibite.model.Steps
 import javax.inject.Inject
 import com.imtuc.intellibite.retrofit.EndPointAPI
 
@@ -12,7 +13,8 @@ class ItemRepository @Inject constructor(
     suspend fun getRecipes(
         ingredients: List<Ingredients>,
         nutritionProfiles: List<Nutrition_Profiles>,
-    ) = api.getrecipes(ingredients, nutritionProfiles)
+        step: List<Steps>,
+    ) = api.getrecipes(ingredients, nutritionProfiles, step)
 
     suspend fun getIngredients(
 

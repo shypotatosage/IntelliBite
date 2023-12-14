@@ -12,6 +12,7 @@ import com.google.gson.reflect.TypeToken
 import com.imtuc.intellibite.model.Ingredients
 import com.imtuc.intellibite.model.Nutrition_Profiles
 import com.imtuc.intellibite.model.Recipes
+import com.imtuc.intellibite.model.Steps
 import com.imtuc.intellibite.repository.ItemRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -57,12 +58,16 @@ class MainViewModel @Inject constructor(
                             var recipe_carbs = item.asJsonObject["proteins_per_portion"].asInt
                             var ingredientsJson = item.asJsonObject["ingredients"].asString
                             var nutritionsJson = item.asJsonObject["nutritions"].asString
+                            var stepsJson = item.asJsonObject["steps"].asString
 
                             val ingredientsList: List<Ingredients> =
                                 Gson().fromJson(ingredientsJson, object : TypeToken<List<Ingredients>>() {}.type)
 
                             val nutritionsList: List<Nutrition_Profiles> =
                                 Gson().fromJson(nutritionsJson, object : TypeToken<List<Nutrition_Profiles>>() {}.type)
+
+                            val stepsList: List<Steps> =
+                                Gson().fromJson(stepsJson, object : TypeToken<List<Steps>>() {}.type)
 
                             var recipe = Recipes(
                                 recipe_id,
@@ -74,7 +79,8 @@ class MainViewModel @Inject constructor(
                                 recipe_proteins,
                                 recipe_carbs,
                                 ingredientsList,
-                                nutritionsList
+                                nutritionsList,
+                                stepsList
                             )
                             tmpArrList.add(recipe)
                         }
@@ -124,12 +130,16 @@ class MainViewModel @Inject constructor(
                         var recipe_carbs = data.asJsonObject["proteins_per_portion"].asInt
                         var ingredientsJson = data.asJsonObject["ingredients"].asString
                         var nutritionsJson = data.asJsonObject["nutritions"].asString
+                        var stepsJson = data.asJsonObject["steps"].asString
 
                         val ingredientsList: List<Ingredients> =
                             Gson().fromJson(ingredientsJson, object : TypeToken<List<Ingredients>>() {}.type)
 
                         val nutritionsList: List<Nutrition_Profiles> =
                             Gson().fromJson(nutritionsJson, object : TypeToken<List<Nutrition_Profiles>>() {}.type)
+
+                        val stepsList: List<Steps> =
+                            Gson().fromJson(stepsJson, object : TypeToken<List<Steps>>() {}.type)
 
                         var recipe = Recipes(
                             recipe_id,
@@ -141,7 +151,8 @@ class MainViewModel @Inject constructor(
                             recipe_proteins,
                             recipe_carbs,
                             ingredientsList,
-                            nutritionsList
+                            nutritionsList,
+                            stepsList
                         )
 
                         var tmpArrList = arrayListOf<Recipes>()

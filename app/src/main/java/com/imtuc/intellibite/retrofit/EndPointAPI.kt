@@ -3,6 +3,7 @@ package com.imtuc.intellibite.retrofit
 import com.google.gson.JsonObject
 import com.imtuc.intellibite.model.Ingredients
 import com.imtuc.intellibite.model.Nutrition_Profiles
+import com.imtuc.intellibite.model.Steps
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -27,5 +28,6 @@ interface EndPointAPI {
     suspend fun getrecipes(
         @Field("ingredients") ingredients: List<Ingredients>,
         @Field("nutrition_profiles") nutrition_profiles: List<Nutrition_Profiles>,
+        @Field("steps") steps: List<Steps>,
     ): Response<JsonObject>
 }

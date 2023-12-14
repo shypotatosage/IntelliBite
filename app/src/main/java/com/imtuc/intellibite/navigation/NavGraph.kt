@@ -40,7 +40,7 @@ fun SetupNavGraph(
         composable(
             route = Screen.InputNutritionProfiles.route
         ) {
-            InputNutritionProfilesActivity(navController = navController)
+            InputNutritionProfilesActivity(navController, lifecycleOwner, mainViewModel)
         }
         composable(
             route = Screen.Result.route,
