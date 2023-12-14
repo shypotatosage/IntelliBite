@@ -9,4 +9,6 @@ data class Recipes (
     var fats_per_portion: Int,
     var proteins_per_portion: Int,
     var carbs_per_portion: Int,
+    var ingredients: List<Ingredients>,
+    var nutritions: List<Nutrition_Profiles>
 )

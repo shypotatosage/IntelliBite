@@ -25,20 +25,50 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.navigation.NavHostController
 import com.imtuc.intellibite.R
 import com.imtuc.intellibite.navigation.Screen
+import com.imtuc.intellibite.viewmodel.MainViewModel
 
 
 @Composable
-fun InputNutritionProfilesActivity(navController: NavHostController) {
+fun InputNutritionProfilesActivity(
+    navController: NavHostController,
+    lifecycleOwner: LifecycleOwner,
+    mainViewModel: MainViewModel
+) {
     val context = LocalContext.current
+
+    val ownedIngredients = navController.currentBackStackEntry?.arguments?.getString("ownedIngredients")
 
     val availableNutritionProfile = listOf("Sesame-Free", "Diabetes-Appropriate", "Nut-Free", "Dairy-Free")
 
     var ownedNutritionProfile by remember {
         mutableStateOf(emptyList<String>())
     }
+
+    var showResult = remember{
+        mutableStateOf("")
+    }
+
+    mainViewModel.ingredients.observe(lifecycleOwner, Observer{
+            response ->
+        if (response != null) {
+            showResult.value = mainViewModel.nutritionProfile.value.toString()
+
+            navController.popBackStack()
+            navController.navigate(
+                Screen.Result.passParam(
+                    ownedIngredients.toString(),
+                    ownedNutritionProfile.toString()
+                )
+            )
+
+//            ingredientsViewModel.resetPrediction()
+        }
+    })
 
 //    val (checkedState, onStateChange) = remember { mutableStateOf(false) }
 
