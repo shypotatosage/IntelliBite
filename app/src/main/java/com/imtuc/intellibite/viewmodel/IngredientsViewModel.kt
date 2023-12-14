@@ -1,5 +1,6 @@
 package com.imtuc.intellibite.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,5 +20,10 @@ class IngredientsViewModel @Inject constructor(
     val ownedIngredients: LiveData<List<Ingredients>>
         get() = _ownedIngredients
 
-
+//    fun getIngredients(
+//        name: List<String>,
+//    )=viewModelScope.launch {
+//        repo.getIngredients(name).let {
+//
+//        }
 }

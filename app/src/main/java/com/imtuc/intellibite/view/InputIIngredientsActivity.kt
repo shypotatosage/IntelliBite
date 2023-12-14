@@ -31,15 +31,21 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.imtuc.intellibite.R
 import com.imtuc.intellibite.navigation.Screen
 import com.imtuc.intellibite.ui.theme.IntelliBiteTheme
+import com.imtuc.intellibite.viewmodel.IngredientsViewModel
 
 
 @Composable
-fun InputIngredientsActivity(navController: NavHostController) {
+fun InputIngredientsActivity(
+    navController: NavHostController,
+    lifecycleOwner: LifecycleOwner,
+    ingredientsViewModel: IngredientsViewModel
+) {
     val context = LocalContext.current
 
     val availableIngredients = listOf("Carrots", "Broccoli", "Potatoes", "Chilis", "Tomatoes", "Onions")
@@ -47,6 +53,13 @@ fun InputIngredientsActivity(navController: NavHostController) {
     var ownedIngredients by remember {
         mutableStateOf(emptyList<String>())
     }
+
+    ingredientsViewModel.ownedIngredients.observe(lifecycleOwner, Observer{
+            response ->
+        if (response != null) {
+
+        }
+    })
 
 //    val (checkedState, onStateChange) = remember { mutableStateOf(false) }
 
@@ -135,10 +148,10 @@ fun IngredientCheckbox(ingredient: String, onCheckedChange: (Boolean) -> Unit) {
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun GreetingPreview() {
-    IntelliBiteTheme {
-        InputIngredientsActivity(rememberNavController())
-    }
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun GreetingPreview() {
+//    IntelliBiteTheme {
+//        InputIngredientsActivity(rememberNavController())
+//    }
+//}

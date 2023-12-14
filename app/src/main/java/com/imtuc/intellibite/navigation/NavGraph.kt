@@ -11,10 +11,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.imtuc.intellibite.view.ResultActivity
 import com.imtuc.intellibite.view.SplashScreenActivity
+import com.imtuc.intellibite.viewmodel.IngredientsViewModel
+
+//import com.imtuc.intellibite.viewmodel.IngredientsViewModel
 
 @Composable
 fun SetupNavGraph(
     navController: NavHostController,
+    ingredientsViewModel: IngredientsViewModel,
     lifecycleOwner: LifecycleOwner
 ) {
     NavHost(
@@ -30,7 +34,7 @@ fun SetupNavGraph(
         composable(
             route = Screen.InputIngredients.route
         ) {
-            InputIngredientsActivity(navController = navController)
+            InputIngredientsActivity(navController, lifecycleOwner, ingredientsViewModel)
         }
 
         composable(

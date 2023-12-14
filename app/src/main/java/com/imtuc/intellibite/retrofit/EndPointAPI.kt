@@ -14,5 +14,7 @@ interface EndPointAPI {
     @GET("/getNutritionProfiles")
     suspend fun getnutritionprofiles(): Response<JsonObject>
     @GET("/getIngredients")
-    suspend fun getingredients(): Response<JsonObject>
+    suspend fun getingredients(
+        @Path("ingredients") ingredients: List<String>,
+    ): Response<JsonObject>
 }

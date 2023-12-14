@@ -11,4 +11,8 @@ class ItemRepository @Inject constructor(
         ingredients: List<String>,
         nutritionProfiles: List<String>,
     ) = api.getrecipes(ingredients, nutritionProfiles)
+
+//    suspend fun getIngredients(
+//        ingredients: List<String>,
+//        ) = api.getrecipes(ingredients)
 }
