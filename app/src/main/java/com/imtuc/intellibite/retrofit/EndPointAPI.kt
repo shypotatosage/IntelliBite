@@ -22,7 +22,7 @@ interface EndPointAPI {
     @FormUrlEncoded
     @POST("get-recipes/")
     suspend fun getrecipes(
-        @Field("ingredients") ingredients: List<String>,
-        @Field("nutrition_profiles") nutrition_profiles: List<String>
+        @Field("ingredients") ingredients: String,
+        @Field("nutrition_profiles") nutrition_profiles: String
     ): Response<JsonObject>
 }

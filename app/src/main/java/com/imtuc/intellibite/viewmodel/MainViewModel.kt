@@ -35,7 +35,7 @@ class MainViewModel @Inject constructor(
     val recipeError: LiveData<String>
         get() = _recipeError
 
-    fun getRecipes(ingredients: List<String>, nutritionProfiles: List<String>) = viewModelScope.launch {
+    fun getRecipes(ingredients: String, nutritionProfiles: String) = viewModelScope.launch {
         repo.getRecipes(ingredients, nutritionProfiles).let { response ->
             if (response.isSuccessful) {
                 if (response.body()?.get("message")?.asString == "success") {

@@ -8,8 +8,8 @@ class ItemRepository @Inject constructor(
     private val api: EndPointAPI
 ) {
     suspend fun getRecipes(
-        ingredients: List<String>,
-        nutritionProfiles: List<String>,
+        ingredients: String,
+        nutritionProfiles: String,
     ) = api.getrecipes(ingredients, nutritionProfiles)
 
     suspend fun getIngredients(

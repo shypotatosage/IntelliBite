@@ -40,7 +40,7 @@ import com.imtuc.intellibite.viewmodel.MainViewModel
 
 @Composable
 fun InputNutritionProfilesActivity(
-    ingredient: List<String>,
+    ingredient: String,
     navController: NavHostController,
     lifecycleOwner: LifecycleOwner,
     mainViewModel: MainViewModel
@@ -54,9 +54,8 @@ fun InputNutritionProfilesActivity(
         mutableStateListOf<Nutrition_Profiles>()
     }
 
-    var ownedNutritionProfile = remember {
-        mutableStateListOf<String>()
-    }
+    var ownedNutritionProfile by remember { mutableStateOf("") }
+
     var nutritionProfilessLoading = remember {
         mutableStateOf(true)
     }
@@ -72,7 +71,7 @@ fun InputNutritionProfilesActivity(
             nutritionProfilessLoading.value = false
         }else{
             nutritionProfilessLoading.value = true
-            Toast.makeText(context, mainViewModel.ingredientsError.value, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, mainViewModel.nutritionProfileError.value, Toast.LENGTH_SHORT).show()
         }
     })
 
@@ -99,18 +98,32 @@ fun InputNutritionProfilesActivity(
             item {
                 Text("Choose Your Specific Conditions")
             }
-            items(availableNutritionProfile) { nutrition ->
-                DiseasesCheckbox(
-                    nutrition = nutrition,
-                    onCheckedChange = { isChecked ->
-                        if (isChecked) {
-                            ownedNutritionProfile.add(nutrition.id)
-                        } else {
-                            ownedNutritionProfile.remove(nutrition.id)
+//            items(availableNutritionProfile) { nutrition ->
+//                DiseasesCheckbox(
+//                    nutrition = nutrition,
+//                    onCheckedChange = { isChecked ->
+//                        if (isChecked) {
+//                            ownedNutritionProfile.add(nutrition.id)
+//                        } else {
+//                            ownedNutritionProfile.remove(nutrition.id)
+//                        }
+//                    }
+//                )
+//            }
+
+
+                items(availableNutritionProfile) { nutrition ->
+                    DiseasesCheckbox(
+                        nutrition = nutrition,
+                        onCheckedChange = { isChecked ->
+                            if (isChecked) {
+                                ownedNutritionProfile += "${nutrition.id},"
+                            } else {
+                                ownedNutritionProfile = ownedNutritionProfile.replace("${nutrition.id},", "")
+                            }
                         }
-                    }
-                )
-            }
+                    )
+                }
 
             item {
                 Spacer(modifier = Modifier.height(16.dp))

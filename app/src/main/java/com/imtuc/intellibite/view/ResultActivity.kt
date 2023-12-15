@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
@@ -35,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -54,8 +56,8 @@ import com.imtuc.intellibite.viewmodel.MainViewModel
 
 @Composable
 fun ResultActivity(
-    ingredient: List<String>,
-    nutrition: List<String>,
+    ingredient: String,
+    nutrition: String,
     navController: NavHostController,
     lifecycleOwner: LifecycleOwner,
     mainViewModel: MainViewModel
@@ -115,7 +117,13 @@ fun ResultActivity(
                 Text("Recipes For You")
             }
             items(availableRecipe) { recipe ->
-                RecipeItem(recipe)
+                ClickableText(
+                    text = AnnotatedString(recipe.name),
+                    onClick = {
+                        navController.navigate(Screen.DetailRecipe.route)
+                    },
+                    modifier = Modifier.padding(8.dp)
+                )
             }
 
             item {

@@ -52,9 +52,7 @@ fun InputIngredientsActivity(
 
 //    val availableIngredients = listOf("Carrots", "Broccoli", "Potatoes", "Chilis", "Tomatoes", "Onions")
 
-    var ownedIngredients = remember {
-        mutableStateListOf<String>()
-    }
+    var ownedIngredients by remember { mutableStateOf("") }
 
     var showResult = remember{
         mutableStateOf("")
@@ -102,17 +100,14 @@ fun InputIngredientsActivity(
                 .fillMaxHeight()
                 .padding(top = 250.dp, start = 16.dp, end = 16.dp)
         ) {
-            item {
-                Text("Choose Your Ingredients")
-            }
             items(availableIngredients) { ingredient ->
                 IngredientCheckbox(
                     ingredient = ingredient,
                     onCheckedChange = { isChecked ->
                         if (isChecked) {
-                            ownedIngredients.add(ingredient.id)
+                            ownedIngredients += "${ingredient.id},"
                         } else {
-                            ownedIngredients.remove(ingredient.id)
+                            ownedIngredients = ownedIngredients.replace("${ingredient.id},", "")
                         }
                     }
                 )

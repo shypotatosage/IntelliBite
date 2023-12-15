@@ -9,6 +9,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.imtuc.intellibite.view.DetailRecipesActivity
 import com.imtuc.intellibite.view.ResultActivity
 import com.imtuc.intellibite.view.SplashScreenActivity
 import com.imtuc.intellibite.viewmodel.MainViewModel
@@ -37,6 +38,24 @@ fun SetupNavGraph(
             InputIngredientsActivity(navController, lifecycleOwner, mainViewModel)
         }
 
+//        composable(
+//            route = Screen.InputNutritionProfiles.route,
+//            arguments = listOf(
+//                navArgument("ingredient") {
+//                    type = NavType.StringType
+//                }
+//            )
+//        ) {
+//            val ingredientsString = it.arguments?.getString("ingredient").orEmpty()
+//            val ingredientsList = ingredientsString.split(",")
+//            InputNutritionProfilesActivity(
+//                ingredient = ingredientsList,
+//                navController = navController,
+//                lifecycleOwner = lifecycleOwner,
+//                mainViewModel = mainViewModel
+//            )
+//        }
+
         composable(
             route = Screen.InputNutritionProfiles.route,
             arguments = listOf(
@@ -45,15 +64,9 @@ fun SetupNavGraph(
                 }
             )
         ) {
-            val ingredientsString = it.arguments?.getString("ingredient").orEmpty()
-            val ingredientsList = ingredientsString.split(",")
-            InputNutritionProfilesActivity(
-                ingredient = ingredientsList,
-                navController = navController,
-                lifecycleOwner = lifecycleOwner,
-                mainViewModel = mainViewModel
-            )
+            InputNutritionProfilesActivity(ingredient = it.arguments?.getString("ingredient").toString(), navController, lifecycleOwner, mainViewModel)
         }
+
         composable(
             route = Screen.Result.route,
             arguments = listOf(
@@ -62,17 +75,24 @@ fun SetupNavGraph(
                 }
             )
         )  {
-            val ingredientsString = it.arguments?.getString("ingredient").orEmpty()
-            val ingredientsList = ingredientsString.split(",")
-            val nutritionsString = it.arguments?.getString("nutrition").orEmpty()
-            val nutritionsList = nutritionsString.split(",")
             ResultActivity(
-                ingredient = ingredientsList,
-                nutrition = nutritionsList,
+                ingredient = it.arguments?.getString("ingredient").toString(),
+                nutrition = it.arguments?.getString("nutrition").toString(),
                 navController = navController,
                 lifecycleOwner = lifecycleOwner,
                 mainViewModel = mainViewModel
             )
+        }
+
+        composable(
+            route = Screen.DetailRecipe.route,
+            arguments = listOf(
+                navArgument("detailRecipe") {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            DetailRecipesActivity(detailRecipe = it.arguments?.getString("detailRecipe").toString(), navController, lifecycleOwner, mainViewModel)
         }
     }
 }
