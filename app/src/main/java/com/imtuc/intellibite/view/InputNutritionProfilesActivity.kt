@@ -134,7 +134,7 @@ fun InputNutritionProfilesActivity(
                     onClick = {
                         navController.navigate(Screen.Result.passParam(
                             ingredient,
-                            ownedNutritionProfile
+                            ownedNutritionProfile.trimEnd(',')
                         ))
                     },
                     modifier = Modifier
