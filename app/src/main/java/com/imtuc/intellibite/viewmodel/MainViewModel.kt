@@ -38,7 +38,7 @@ class MainViewModel @Inject constructor(
     fun getRecipes(ingredients: List<Ingredients>, nutritionProfiles: List<Nutrition_Profiles>) = viewModelScope.launch {
         repo.getRecipes(ingredients, nutritionProfiles).let { response ->
             if (response.isSuccessful) {
-                if (response.body()?.get("message")?.asString == "Success") {
+                if (response.body()?.get("message")?.asString == "success") {
                     _recipeError.value = "Get Data Successful"
                     _recipes.value = arrayListOf()
 
@@ -117,7 +117,7 @@ class MainViewModel @Inject constructor(
     fun getDetailRecipe(id: String) = viewModelScope.launch {
         repo.getDetailRecipe(id).let { response ->
             if (response.isSuccessful) {
-                if (response.body()?.get("message")?.asString == "Success") {
+                if (response.body()?.get("message")?.asString == "success") {
                     if (!response.body()!!.get("data").isJsonNull) {
                         val data: JsonObject = response.body()!!.getAsJsonObject("data")
 
@@ -191,7 +191,7 @@ class MainViewModel @Inject constructor(
     fun getIngredients() = viewModelScope.launch {
         repo.getIngredients().let { response ->
             if (response.isSuccessful) {
-                if (response.body()?.get("message")?.asString == "Success") {
+                if (response.body()?.get("message")?.asString == "success") {
                     _ingredientsError.value = "Get Data Successful"
                     _ingredients.value = arrayListOf()
 
@@ -246,7 +246,7 @@ class MainViewModel @Inject constructor(
     fun getNutritionProfile() = viewModelScope.launch {
         repo.getIngredients().let { response ->
             if (response.isSuccessful) {
-                if (response.body()?.get("message")?.asString == "Success") {
+                if (response.body()?.get("message")?.asString == "success") {
                     _nutritionProfileError.value = "Get Data Successful"
                     _nutritionProfile.value = arrayListOf()
 
