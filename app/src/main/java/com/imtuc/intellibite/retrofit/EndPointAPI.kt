@@ -27,7 +27,6 @@ interface EndPointAPI {
     @POST("/get-recipes/")
     suspend fun getrecipes(
         @Field("ingredients") ingredients: List<Ingredients>,
-        @Field("nutrition_profiles") nutrition_profiles: List<Nutrition_Profiles>,
-        @Field("steps") steps: List<Steps>,
+        @Field("nutrition_profiles") nutrition_profiles: List<Nutrition_Profiles>
     ): Response<JsonObject>
 }

@@ -13,8 +13,7 @@ class ItemRepository @Inject constructor(
     suspend fun getRecipes(
         ingredients: List<Ingredients>,
         nutritionProfiles: List<Nutrition_Profiles>,
-        step: List<Steps>,
-    ) = api.getrecipes(ingredients, nutritionProfiles, step)
+    ) = api.getrecipes(ingredients, nutritionProfiles)
 
     suspend fun getIngredients(
 
