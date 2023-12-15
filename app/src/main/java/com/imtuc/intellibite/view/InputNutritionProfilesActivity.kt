@@ -1,3 +1,4 @@
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -14,7 +15,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -29,48 +32,49 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.navigation.NavHostController
 import com.imtuc.intellibite.R
+import com.imtuc.intellibite.model.Ingredients
+import com.imtuc.intellibite.model.Nutrition_Profiles
 import com.imtuc.intellibite.navigation.Screen
 import com.imtuc.intellibite.viewmodel.MainViewModel
 
 
 @Composable
 fun InputNutritionProfilesActivity(
+    ingredient: List<String>,
     navController: NavHostController,
     lifecycleOwner: LifecycleOwner,
-//    mainViewModel: MainViewModel
+    mainViewModel: MainViewModel
 ) {
     val context = LocalContext.current
-
-    val ownedIngredients = navController.currentBackStackEntry?.arguments?.getString("ownedIngredients")
-
-    val availableNutritionProfile = listOf("Sesame-Free", "Diabetes-Appropriate", "Nut-Free", "Dairy-Free")
-
-    var ownedNutritionProfile by remember {
-        mutableStateOf(emptyList<String>())
-    }
 
     var showResult = remember{
         mutableStateOf("")
     }
+    var availableNutritionProfile = remember {
+        mutableStateListOf<Nutrition_Profiles>()
+    }
 
-//    mainViewModel.ingredients.observe(lifecycleOwner, Observer{
-//            response ->
-//        if (response != null) {
-//            showResult.value = mainViewModel.nutritionProfile.value.toString()
-//
-//            navController.popBackStack()
-//            navController.navigate(
-//                Screen.Result.passParam(
-//                    ownedIngredients.toString(),
-//                    ownedNutritionProfile.toString()
-//                )
-//            )
-//
-////            ingredientsViewModel.resetPrediction()
-//        }
-//    })
+    var ownedNutritionProfile = remember {
+        mutableStateListOf<String>()
+    }
+    var nutritionProfilessLoading = remember {
+        mutableStateOf(true)
+    }
+    LaunchedEffect(key1 = true) {
+        mainViewModel.getNutritionProfile()
+    }
 
-//    val (checkedState, onStateChange) = remember { mutableStateOf(false) }
+    mainViewModel.nutritionProfile.observe(lifecycleOwner, Observer{
+            response ->
+        if (mainViewModel.nutritionProfileError.value == "Get Data Successful"){
+            availableNutritionProfile.clear()
+            availableNutritionProfile.addAll(mainViewModel.nutritionProfile.value!!)
+            nutritionProfilessLoading.value = false
+        }else{
+            nutritionProfilessLoading.value = true
+            Toast.makeText(context, mainViewModel.ingredientsError.value, Toast.LENGTH_SHORT).show()
+        }
+    })
 
     Box(
         modifier = Modifier
@@ -95,14 +99,14 @@ fun InputNutritionProfilesActivity(
             item {
                 Text("Choose Your Specific Conditions")
             }
-            items(availableNutritionProfile) { nutritionProfiles ->
+            items(availableNutritionProfile) { nutrition ->
                 DiseasesCheckbox(
-                    nutritionProfiles = nutritionProfiles,
+                    nutrition = nutrition,
                     onCheckedChange = { isChecked ->
                         if (isChecked) {
-                            ownedNutritionProfile = ownedNutritionProfile + nutritionProfiles
+                            ownedNutritionProfile.add(nutrition.id)
                         } else {
-                            ownedNutritionProfile = ownedNutritionProfile - nutritionProfiles
+                            ownedNutritionProfile.remove(nutrition.id)
                         }
                     }
                 )
@@ -115,7 +119,10 @@ fun InputNutritionProfilesActivity(
             item {
                 Button(
                     onClick = {
-                        navController.navigate(Screen.Result.route)
+                        navController.navigate(Screen.Result.passParam(
+                            ingredient,
+                            ownedNutritionProfile
+                        ))
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -129,7 +136,7 @@ fun InputNutritionProfilesActivity(
 }
 
 @Composable
-fun DiseasesCheckbox(nutritionProfiles: String, onCheckedChange: (Boolean) -> Unit) {
+fun DiseasesCheckbox(nutrition: Nutrition_Profiles, onCheckedChange: (Boolean) -> Unit) {
     val (checkedState, onStateChange) = remember { mutableStateOf(false) }
 
     Row(
@@ -151,7 +158,7 @@ fun DiseasesCheckbox(nutritionProfiles: String, onCheckedChange: (Boolean) -> Un
 //            colors = CheckboxDefaults.colors(checkedColor = Color.Green) // Set checkbox color to green
         )
         Text(
-            text = nutritionProfiles,
+            text = nutrition.name,
             modifier = Modifier.padding(start = 16.dp)
         )
     }

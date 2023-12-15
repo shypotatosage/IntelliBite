@@ -38,9 +38,21 @@ fun SetupNavGraph(
         }
 
         composable(
-            route = Screen.InputNutritionProfiles.route
+            route = Screen.InputNutritionProfiles.route,
+            arguments = listOf(
+                navArgument("ingredient") {
+                    type = NavType.StringType
+                }
+            )
         ) {
-            InputNutritionProfilesActivity(navController, lifecycleOwner)
+            val ingredientsString = it.arguments?.getString("ingredient").orEmpty()
+            val ingredientsList = ingredientsString.split(",")
+            InputNutritionProfilesActivity(
+                ingredient = ingredientsList,
+                navController = navController,
+                lifecycleOwner = lifecycleOwner,
+                mainViewModel = mainViewModel
+            )
         }
         composable(
             route = Screen.Result.route,
@@ -49,8 +61,18 @@ fun SetupNavGraph(
                     type = NavType.StringType
                 }
             )
-        ) {
-            ResultActivity(result = it.arguments?.getString("results").toString(), navController)
+        )  {
+            val ingredientsString = it.arguments?.getString("ingredient").orEmpty()
+            val ingredientsList = ingredientsString.split(",")
+            val nutritionsString = it.arguments?.getString("nutrition").orEmpty()
+            val nutritionsList = nutritionsString.split(",")
+            ResultActivity(
+                ingredient = ingredientsList,
+                nutrition = nutritionsList,
+                navController = navController,
+                lifecycleOwner = lifecycleOwner,
+                mainViewModel = mainViewModel
+            )
         }
     }
 }

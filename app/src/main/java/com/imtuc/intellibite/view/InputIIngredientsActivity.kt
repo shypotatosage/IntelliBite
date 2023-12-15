@@ -79,21 +79,8 @@ fun InputIngredientsActivity(
             ingredientsLoading.value = true
             Toast.makeText(context, mainViewModel.ingredientsError.value, Toast.LENGTH_SHORT).show()
         }
-//        if (response != null) {
-//            showResult.value = mainViewModel.ingredients.value.toString()
-//
-//            navController.popBackStack()
-//            navController.navigate(
-//                Screen.InputNutritionProfiles.passParam(
-//                    ownedIngredients.toString()
-//                )
-//            )
-//
-////            ingredientsViewModel.resetPrediction()
-//        }
     })
 
-//    val (checkedState, onStateChange) = remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -138,7 +125,9 @@ fun InputIngredientsActivity(
             item {
                 Button(
                     onClick = {
-                        navController.navigate(Screen.InputNutritionProfiles.route)
+                        navController.navigate(Screen.InputNutritionProfiles.passParam(
+                            ownedIngredients
+                        ))
                     },
                     modifier = Modifier
                         .fillMaxWidth()
