@@ -1,15 +1,11 @@
 package com.imtuc.intellibite.retrofit
 
 import com.google.gson.JsonObject
-import com.imtuc.intellibite.model.Ingredients
-import com.imtuc.intellibite.model.Nutrition_Profiles
-import com.imtuc.intellibite.model.Steps
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface EndPointAPI {
@@ -26,7 +22,7 @@ interface EndPointAPI {
     @FormUrlEncoded
     @POST("get-recipes/")
     suspend fun getrecipes(
-        @Field("ingredients") ingredients: List<Ingredients>,
-        @Field("nutrition_profiles") nutrition_profiles: List<Nutrition_Profiles>
+        @Field("ingredients") ingredients: List<String>,
+        @Field("nutrition_profiles") nutrition_profiles: List<String>
     ): Response<JsonObject>
 }
