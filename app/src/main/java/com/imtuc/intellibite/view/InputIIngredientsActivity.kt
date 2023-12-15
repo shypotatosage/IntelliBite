@@ -120,7 +120,7 @@ fun InputIngredientsActivity(
             }
             items(availableIngredients) { ingredient ->
                 IngredientCheckbox(
-                    ingredient = availableIngredients,
+                    ingredient = ingredient,
                     onCheckedChange = { isChecked ->
                         if (isChecked) {
                             ownedIngredients.add(ingredient.id)
@@ -152,7 +152,7 @@ fun InputIngredientsActivity(
 }
 
 @Composable
-fun IngredientCheckbox(ingredient: List<Ingredients>, onCheckedChange: (Boolean) -> Unit) {
+fun IngredientCheckbox(ingredient: Ingredients, onCheckedChange: (Boolean) -> Unit) {
     val (checkedState, onStateChange) = remember { mutableStateOf(false) }
 
     Row(
@@ -174,7 +174,7 @@ fun IngredientCheckbox(ingredient: List<Ingredients>, onCheckedChange: (Boolean)
 //            colors = CheckboxDefaults.colors(checkedColor = Color.Green) // Set checkbox color to green
         )
         Text(
-            text = ingredient.toString(),
+            text = ingredient.name,
             modifier = Modifier.padding(start = 16.dp)
         )
     }
