@@ -1,6 +1,7 @@
 package com.imtuc.intellibite.view
 
 import android.content.Context
+import android.Manifest
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -36,8 +37,11 @@ import com.imtuc.intellibite.navigation.Screen
 import com.imtuc.intellibite.ui.theme.IntelliBiteTheme
 import kotlinx.coroutines.delay
 
+//@OptIn(Permis::class)
 @Composable
+
 fun SplashScreenActivity(navController: NavHostController) {
+
     var startAnimation by remember {
         mutableStateOf(false)
     }

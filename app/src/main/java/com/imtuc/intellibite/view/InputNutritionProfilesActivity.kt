@@ -37,7 +37,7 @@ import com.imtuc.intellibite.viewmodel.MainViewModel
 fun InputNutritionProfilesActivity(
     navController: NavHostController,
     lifecycleOwner: LifecycleOwner,
-    mainViewModel: MainViewModel
+//    mainViewModel: MainViewModel
 ) {
     val context = LocalContext.current
 
@@ -53,22 +53,22 @@ fun InputNutritionProfilesActivity(
         mutableStateOf("")
     }
 
-    mainViewModel.ingredients.observe(lifecycleOwner, Observer{
-            response ->
-        if (response != null) {
-            showResult.value = mainViewModel.nutritionProfile.value.toString()
-
-            navController.popBackStack()
-            navController.navigate(
-                Screen.Result.passParam(
-                    ownedIngredients.toString(),
-                    ownedNutritionProfile.toString()
-                )
-            )
-
-//            ingredientsViewModel.resetPrediction()
-        }
-    })
+//    mainViewModel.ingredients.observe(lifecycleOwner, Observer{
+//            response ->
+//        if (response != null) {
+//            showResult.value = mainViewModel.nutritionProfile.value.toString()
+//
+//            navController.popBackStack()
+//            navController.navigate(
+//                Screen.Result.passParam(
+//                    ownedIngredients.toString(),
+//                    ownedNutritionProfile.toString()
+//                )
+//            )
+//
+////            ingredientsViewModel.resetPrediction()
+//        }
+//    })
 
 //    val (checkedState, onStateChange) = remember { mutableStateOf(false) }
 

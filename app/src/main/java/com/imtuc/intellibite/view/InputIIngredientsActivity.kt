@@ -1,3 +1,4 @@
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -30,6 +32,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.navigation.NavHostController
 import com.imtuc.intellibite.R
+import com.imtuc.intellibite.model.Ingredients
 import com.imtuc.intellibite.navigation.Screen
 import com.imtuc.intellibite.ui.theme.IntelliBiteTheme
 import com.imtuc.intellibite.viewmodel.MainViewModel
@@ -47,30 +50,47 @@ fun InputIngredientsActivity(
         mainViewModel.getIngredients()
     }
 
-    val availableIngredients = listOf("Carrots", "Broccoli", "Potatoes", "Chilis", "Tomatoes", "Onions")
+//    val availableIngredients = listOf("Carrots", "Broccoli", "Potatoes", "Chilis", "Tomatoes", "Onions")
 
-    var ownedIngredients by remember {
-        mutableStateOf(emptyList<String>())
+    var ownedIngredients = remember {
+        mutableStateListOf<String>()
     }
 
     var showResult = remember{
         mutableStateOf("")
     }
 
+    var availableIngredients = remember {
+        mutableStateListOf<Ingredients>()
+    }
+
+    var ingredientsLoading = remember {
+        mutableStateOf(true)
+    }
+
+
     mainViewModel.ingredients.observe(lifecycleOwner, Observer{
             response ->
-        if (response != null) {
-            showResult.value = mainViewModel.ingredients.value.toString()
-
-            navController.popBackStack()
-            navController.navigate(
-                Screen.InputNutritionProfiles.passParam(
-                    ownedIngredients.toString()
-                )
-            )
-
-//            ingredientsViewModel.resetPrediction()
+        if (mainViewModel.ingredientsError.value == "Get Data Successful"){
+            availableIngredients.clear()
+            availableIngredients.addAll(mainViewModel.ingredients.value!!)
+            ingredientsLoading.value = false
+        }else{
+            ingredientsLoading.value = true
+            Toast.makeText(context, mainViewModel.ingredientsError.value, Toast.LENGTH_SHORT).show()
         }
+//        if (response != null) {
+//            showResult.value = mainViewModel.ingredients.value.toString()
+//
+//            navController.popBackStack()
+//            navController.navigate(
+//                Screen.InputNutritionProfiles.passParam(
+//                    ownedIngredients.toString()
+//                )
+//            )
+//
+////            ingredientsViewModel.resetPrediction()
+//        }
     })
 
 //    val (checkedState, onStateChange) = remember { mutableStateOf(false) }
@@ -100,12 +120,12 @@ fun InputIngredientsActivity(
             }
             items(availableIngredients) { ingredient ->
                 IngredientCheckbox(
-                    ingredient = ingredient,
+                    ingredient = availableIngredients,
                     onCheckedChange = { isChecked ->
                         if (isChecked) {
-                            ownedIngredients = ownedIngredients + ingredient
+                            ownedIngredients.add(ingredient.id)
                         } else {
-                            ownedIngredients = ownedIngredients - ingredient
+                            ownedIngredients.remove(ingredient.id)
                         }
                     }
                 )
@@ -132,7 +152,7 @@ fun InputIngredientsActivity(
 }
 
 @Composable
-fun IngredientCheckbox(ingredient: String, onCheckedChange: (Boolean) -> Unit) {
+fun IngredientCheckbox(ingredient: List<Ingredients>, onCheckedChange: (Boolean) -> Unit) {
     val (checkedState, onStateChange) = remember { mutableStateOf(false) }
 
     Row(
@@ -154,7 +174,7 @@ fun IngredientCheckbox(ingredient: String, onCheckedChange: (Boolean) -> Unit) {
 //            colors = CheckboxDefaults.colors(checkedColor = Color.Green) // Set checkbox color to green
         )
         Text(
-            text = ingredient,
+            text = ingredient.toString(),
             modifier = Modifier.padding(start = 16.dp)
         )
     }

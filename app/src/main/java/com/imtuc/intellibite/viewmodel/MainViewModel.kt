@@ -14,9 +14,10 @@ import com.imtuc.intellibite.model.Nutrition_Profiles
 import com.imtuc.intellibite.model.Recipes
 import com.imtuc.intellibite.model.Steps
 import com.imtuc.intellibite.repository.ItemRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
+@HiltViewModel
 class MainViewModel @Inject constructor(
     private val repo: ItemRepository
 ) : ViewModel(){
