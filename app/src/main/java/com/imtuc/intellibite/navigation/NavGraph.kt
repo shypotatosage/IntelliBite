@@ -59,25 +59,28 @@ fun SetupNavGraph(
         composable(
             route = Screen.InputNutritionProfiles.route,
             arguments = listOf(
-                navArgument("ingredient") {
+                navArgument("ingredients") {
                     type = NavType.StringType
                 }
             )
         ) {
-            InputNutritionProfilesActivity(ingredient = it.arguments?.getString("ingredient").toString(), navController, lifecycleOwner, mainViewModel)
+            InputNutritionProfilesActivity(ingredient = it.arguments?.getString("ingredients").toString(), navController, lifecycleOwner, mainViewModel)
         }
 
         composable(
             route = Screen.Result.route,
             arguments = listOf(
-                navArgument("results") {
+                navArgument("ingredients") {
+                    type = NavType.StringType
+                },
+                navArgument("nutritions") {
                     type = NavType.StringType
                 }
             )
         )  {
             ResultActivity(
-                ingredient = it.arguments?.getString("ingredient").toString(),
-                nutrition = it.arguments?.getString("nutrition").toString(),
+                ingredient = it.arguments?.getString("ingredients").toString(),
+                nutrition = it.arguments?.getString("nutritions").toString(),
                 navController = navController,
                 lifecycleOwner = lifecycleOwner,
                 mainViewModel = mainViewModel

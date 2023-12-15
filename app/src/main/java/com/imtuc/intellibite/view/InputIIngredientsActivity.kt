@@ -114,6 +114,9 @@ fun InputIngredientsActivity(
             }
 
             item {
+                // Remove trailing comma
+                Text(text = ownedIngredients.trimEnd(','))
+
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
@@ -121,7 +124,7 @@ fun InputIngredientsActivity(
                 Button(
                     onClick = {
                         navController.navigate(Screen.InputNutritionProfiles.passParam(
-                            ownedIngredients
+                            ownedIngredients.trimEnd(',')
                         ))
                     },
                     modifier = Modifier

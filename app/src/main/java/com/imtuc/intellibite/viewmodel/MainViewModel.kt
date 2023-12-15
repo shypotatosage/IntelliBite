@@ -244,7 +244,7 @@ class MainViewModel @Inject constructor(
         get() = _nutritionProfileError
 
     fun getNutritionProfile() = viewModelScope.launch {
-        repo.getIngredients().let { response ->
+        repo.getNutritionProfile().let { response ->
             if (response.isSuccessful) {
                 if (response.body()?.get("message")?.asString == "success") {
                     _nutritionProfileError.value = "Get Data Successful"
