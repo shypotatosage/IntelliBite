@@ -57,18 +57,12 @@ class MainViewModel @Inject constructor(
                             var recipe_fats = item.asJsonObject["fats_per_portion"].asInt
                             var recipe_proteins = item.asJsonObject["fats_per_portion"].asInt
                             var recipe_carbs = item.asJsonObject["proteins_per_portion"].asInt
-                            var ingredientsJson = item.asJsonObject["ingredients"].asString
-                            var nutritionsJson = item.asJsonObject["nutritions"].asString
-                            var stepsJson = item.asJsonObject["steps"].asString
 
-                            val ingredientsList: List<Ingredients> =
-                                Gson().fromJson(ingredientsJson, object : TypeToken<List<Ingredients>>() {}.type)
+                            var ingredientsList = arrayListOf<Ingredients>()
 
-                            val nutritionsList: List<Nutrition_Profiles> =
-                                Gson().fromJson(nutritionsJson, object : TypeToken<List<Nutrition_Profiles>>() {}.type)
+                            var nutritionsList = arrayListOf<Nutrition_Profiles>()
 
-                            val stepsList: List<Steps> =
-                                Gson().fromJson(stepsJson, object : TypeToken<List<Steps>>() {}.type)
+                            var stepsList = arrayListOf<Steps>()
 
                             var recipe = Recipes(
                                 recipe_id,

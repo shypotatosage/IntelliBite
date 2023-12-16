@@ -4,5 +4,5 @@ import org.w3c.dom.Text
 
 data class Steps (
     var id: String,
-    var description: Text,
+    var description: String,
 )
