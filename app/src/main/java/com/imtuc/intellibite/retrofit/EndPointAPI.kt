@@ -9,9 +9,9 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface EndPointAPI {
-    @GET("get-recipe/{id}")
+    @GET("get-recipe/{id}/")
     suspend fun getdetailrecipe(
-        @Query("id") id: String?,
+        @Query("id") id: String,
         ): Response<JsonObject>
     @GET("get-nutrition-profiles/")
     suspend fun getnutritionprofiles(

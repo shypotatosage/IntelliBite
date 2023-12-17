@@ -95,7 +95,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    val _detailrecipes: MutableLiveData<List<Recipes>> by lazy {
+    val _detailrecipes: MutableLiveData<List<Recipes>>  by lazy {
         MutableLiveData<List<Recipes>>()
     }
 

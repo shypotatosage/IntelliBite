@@ -2,6 +2,7 @@ package com.imtuc.intellibite.view
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -64,17 +67,12 @@ fun ResultActivity(
 ) {
     val context = LocalContext.current
 
-
     var availableRecipe = remember {
         mutableStateListOf<Recipes>()
     }
 
     var recipeLoading = remember {
         mutableStateOf(true)
-    }
-
-    var ownedRecipes = remember {
-        mutableStateListOf<String>()
     }
 
     mainViewModel.recipes.observe(lifecycleOwner, Observer{
@@ -112,19 +110,19 @@ fun ResultActivity(
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .padding(top = 250.dp, start = 16.dp, end = 16.dp)
+//                .verticalScroll(rememberScrollState())
         ) {
             item {
-                Text("Recipes For You")
+                Text("Recipes Recommendation For You", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             }
             items(availableRecipe) { recipe ->
-                ClickableText(
-                    text = AnnotatedString(recipe.name),
-                    onClick = {
-                        navController.navigate(Screen.DetailRecipe.route)
-                    },
-                    modifier = Modifier.padding(8.dp)
-                )
+                RecipeItem(recipe = recipe, onClick = {
+                    navController.navigate(Screen.DetailRecipe.passParam(
+                        detailRecipe = recipe.id
+                    ))
+                })
             }
+
 
             item {
                 Spacer(modifier = Modifier.height(16.dp))
@@ -134,19 +132,37 @@ fun ResultActivity(
 }
 
 @Composable
-fun RecipeItem(recipe: Recipes) {
-    Row(
+fun RecipeItem(recipe: Recipes, onClick: () -> Unit) {
+    Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(8.dp)
+            .shadow(4.dp)
+            .clickable(onClick = onClick),
     ) {
-        Text(
-            text = recipe.name,
-            modifier = Modifier.padding(start = 16.dp)
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                text = recipe.id,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "Servings: ${recipe.servings}",
+                fontSize = 14.sp
+            )
+            Text(
+                text = "Time needed: ${recipe.making_time_in_minutes} minutes",
+                fontSize = 14.sp
+            )
+        }
     }
 }
+
 
 
 

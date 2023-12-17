@@ -21,7 +21,7 @@ sealed class Screen(val route: String) {
         fun passParam(
             detailRecipe: String
         ): String {
-            return "result/$detailRecipe"
+            return "detailRecipe/$detailRecipe"
         }
     }
 }

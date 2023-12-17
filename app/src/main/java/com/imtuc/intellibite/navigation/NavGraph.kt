@@ -95,7 +95,7 @@ fun SetupNavGraph(
                 }
             )
         ) {
-            DetailRecipesActivity(detailRecipe = it.arguments?.getString("detailRecipe").toString(), navController, lifecycleOwner, mainViewModel)
+            DetailRecipesActivity(recipeid = it.arguments?.getString("detailRecipe").toString(), navController, lifecycleOwner, mainViewModel)
         }
     }
 }
