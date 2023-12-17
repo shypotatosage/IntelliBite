@@ -48,6 +48,10 @@ fun ImageClassificationActivity() {
         mutableStateOf<Uri?>(null)
     }
 
+    val imagePredict = remember {
+        mutableStateOf(false)
+    }
+
     val context = LocalContext.current
 
     val file = File(context.filesDir, "external_files")
@@ -67,9 +71,11 @@ fun ImageClassificationActivity() {
         if (Build.VERSION.SDK_INT < 28) {
             bitmap.value = MediaStore.Images
                 .Media.getBitmap(context.contentResolver, it).copy(Bitmap.Config.RGB_565, true)
+            imagePredict.value = true
         } else {
             val source = ImageDecoder.createSource(context.contentResolver, it)
             bitmap.value = ImageDecoder.decodeBitmap(source).copy(Bitmap.Config.RGBA_F16, true)
+            imagePredict.value = true
         }
     }
 
@@ -84,9 +90,11 @@ fun ImageClassificationActivity() {
         }
     }
 
-    LaunchedEffect(key1 = bitmap.value) {
-        if (bitmap.value != null) {
-            Log.e("Result", classifyImage(bitmap.value!!, context))
+    LaunchedEffect(key1 = imagePredict.value) {
+        if (imagePredict.value != false) {
+            var result = classifyImage(bitmap.value!!, context)
+            Log.e("Result", result)
+            imagePredict.value = false
         }
     }
 
@@ -121,18 +129,19 @@ fun ImageClassificationActivity() {
 
 fun classifyImage(image: Bitmap, context: Context): String {
     try {
+        val newImage = Bitmap.createScaledBitmap(image, 224, 224, false)
         val model: Model = Model.newInstance(context)
 
         // Creates inputs for reference.
-        val inputFeature0 = TensorBuffer.createFixedSize(intArrayOf(1, 32, 32, 3), DataType.FLOAT32)
-        val byteBuffer = ByteBuffer.allocateDirect(4 * 32 * 32 * 3)
+        val inputFeature0 = TensorBuffer.createFixedSize(intArrayOf(1, 224, 224, 3), DataType.FLOAT32)
+        val byteBuffer = ByteBuffer.allocateDirect(4 * 224 * 224 * 3)
         byteBuffer.order(ByteOrder.nativeOrder())
-        val intValues = IntArray(32 * 32)
-        image.getPixels(intValues, 0, 32, 0, 0, 32, 32)
+        val intValues = IntArray(224 * 224)
+        newImage.getPixels(intValues, 0, 224, 0, 0, 224, 224)
         var pixel = 0
         //iterate over each pixel and extract R, G, and B values. Add those values individually to the byte buffer.
-        for (i in 0 until 32) {
-            for (j in 0 until 32) {
+        for (i in 0 until 224) {
+            for (j in 0 until 224) {
                 val `val` = intValues[pixel++] // RGB
                 byteBuffer.putFloat((`val` shr 16 and 0xFF) * (1f / 1))
                 byteBuffer.putFloat((`val` shr 8 and 0xFF) * (1f / 1))
