@@ -10,35 +10,37 @@ import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.FileProvider
-import com.imtuc.intellibite.ml.Model
-import org.tensorflow.lite.DataType
-import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
-import java.io.IOException
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
+import androidx.core.content.FileProvider
+import com.imtuc.intellibite.ml.Model
+import org.tensorflow.lite.DataType
+import org.tensorflow.lite.support.image.ImageProcessor
+import org.tensorflow.lite.support.image.TensorImage
+import org.tensorflow.lite.support.image.ops.ResizeOp
+import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 import java.io.File
+import java.io.IOException
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.util.Objects
 
 
@@ -59,23 +61,23 @@ fun ImageClassificationActivity() {
     val uri = FileProvider.getUriForFile(Objects.requireNonNull(context),
         context.packageName + ".provider", file);
 
-    val bitmap = remember {
+    var bitmap by remember {
         mutableStateOf<Bitmap?>(null)
     }
 
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicture()) {
         imageUri = uri
-    }
 
-    imageUri?.let {
-        if (Build.VERSION.SDK_INT < 28) {
-            bitmap.value = MediaStore.Images
-                .Media.getBitmap(context.contentResolver, it).copy(Bitmap.Config.RGB_565, true)
-            imagePredict.value = true
-        } else {
-            val source = ImageDecoder.createSource(context.contentResolver, it)
-            bitmap.value = ImageDecoder.decodeBitmap(source).copy(Bitmap.Config.RGBA_F16, true)
-            imagePredict.value = true
+        imageUri?.let {
+            if (Build.VERSION.SDK_INT < 28) {
+                bitmap = MediaStore.Images
+                    .Media.getBitmap(context.contentResolver, it).copy(Bitmap.Config.ARGB_8888, true)
+                imagePredict.value = true
+            } else {
+                val source = ImageDecoder.createSource(context.contentResolver, it)
+                bitmap = ImageDecoder.decodeBitmap(source).copy(Bitmap.Config.ARGB_8888, true)
+                imagePredict.value = true
+            }
         }
     }
 
@@ -92,7 +94,7 @@ fun ImageClassificationActivity() {
 
     LaunchedEffect(key1 = imagePredict.value) {
         if (imagePredict.value != false) {
-            var result = classifyImage(bitmap.value!!, context)
+            var result = classifyImage(bitmap!!, context)
             Log.e("Result", result)
             imagePredict.value = false
         }
@@ -120,7 +122,7 @@ fun ImageClassificationActivity() {
             Image(
                 modifier = Modifier
                     .padding(16.dp, 8.dp),
-                painter = rememberAsyncImagePainter(imageUri),
+                bitmap = Bitmap.createScaledBitmap(bitmap!!, 224, 224, false).asImageBitmap(),
                 contentDescription = null
             )
         }
@@ -129,6 +131,12 @@ fun ImageClassificationActivity() {
 
 fun classifyImage(image: Bitmap, context: Context): String {
     try {
+        val imageProcessor = ImageProcessor.Builder()
+            .add(ResizeOp(224, 224, ResizeOp.ResizeMethod.BILINEAR))
+            .build()
+        var tImage = TensorImage(DataType.FLOAT32)
+        tImage.load(image)
+        tImage = imageProcessor.process(tImage)
         val newImage = Bitmap.createScaledBitmap(image, 224, 224, false)
         val model: Model = Model.newInstance(context)
 
@@ -151,19 +159,22 @@ fun classifyImage(image: Bitmap, context: Context): String {
         inputFeature0.loadBuffer(byteBuffer)
 
         // Runs model inference and gets result.
-        val outputs: Model.Outputs = model.process(inputFeature0)
+        val outputs: Model.Outputs = model.process(tImage.tensorBuffer)
         val outputFeature0: TensorBuffer = outputs.outputFeature0AsTensorBuffer
         val confidences = outputFeature0.floatArray
+        Log.e("Result", confidences.joinToString())
+
         // find the index of the class with the biggest confidence.
+        val classes = arrayOf("Apple", "Banana", "Beetroot", "Bell pepper", "Cabbage", "Capsicum", "Carrot", "Cauliflower", "Chilli pepper", "Churros", "Corn", "Croissant", "Cucumber", "Custard tart", "Doughnut", "Eggplant", "Fried rice", "Garlic", "Ginger", "Grapes", "Hotdog", "Jalepeno", "Kiwi", "Lemon", "Lettuce", "Mango", "Onion", "Orange", "Pancake", "Paprika", "Pear", "Peas", "Pineapple", "Pizza", "Pomegranate", "Popcorn", "Potato", "Raddish", "Rice", "Salad", "Sandwich", "Soy beans", "Spaghetti", "Spinach", "Steak", "Sweetpotato", "Tomato", "Turnip", "Waffle", "Watermelon")
         var maxPos = 0
         var maxConfidence = 0f
         for (i in confidences.indices) {
             if (confidences[i] > maxConfidence) {
                 maxConfidence = confidences[i]
                 maxPos = i
+                Log.e("Result", classes[i].toString())
             }
         }
-        val classes = arrayOf("Apple", "Banana", "Beetroot", "Bell pepper", "Brownies", "Burger", "Cabbage", "Capsicum", "Carrot", "Cauliflower", "Chicken nugget", "Chilli pepper", "Churros", "Corn", "Cream puff", "Croissant", "Cucumber", "Custard tart", "Doughnut", "Eggplant", "Fried rice", "Garlic", "Ginger", "Grapes", "Hotdog", "Jalepeno", "Kiwi", "Lemon", "Lettuce", "Mango", "Onion", "Orange", "Pancake", "Paprika", "Pear", "Peas", "Pineapple", "Pizza", "Pomegranate", "Popcorn", "Potato", "Raddish", "Rice", "Salad", "Sandwich", "Soy beans", "Spaghetti", "Spinach", "Steak", "Sushi", "Sweetpotato", "Tomato", "Turnip", "Waffle", "Watermelon")
 
         // Releases model resources if no longer used.
         model.close()
