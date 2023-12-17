@@ -2,7 +2,9 @@ package com.imtuc.intellibite.navigation
 
 sealed class Screen(val route: String) {
     object Splash:Screen(route = "splash_screen")
+
     object InputIngredients:Screen(route = "input_ingredients")
+
     object InputNutritionProfiles:Screen(route = "result/{ingredients}"){
         fun passParam(ingredients: String): String {
             return "result/$ingredients"
@@ -24,5 +26,7 @@ sealed class Screen(val route: String) {
             return "result/$detailRecipe"
         }
     }
+
+    object ImageClassification:Screen(route = "image_classification")
 }
 
