@@ -54,6 +54,10 @@ fun ImageClassificationActivity() {
         mutableStateOf(false)
     }
 
+    val predictionResult = remember {
+        mutableStateOf("")
+    }
+
     val context = LocalContext.current
 
     val file = File(context.filesDir, "external_files")
@@ -65,8 +69,8 @@ fun ImageClassificationActivity() {
         mutableStateOf<Bitmap?>(null)
     }
 
-    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicture()) {
-        imageUri = uri
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
+        imageUri = it
 
         imageUri?.let {
             if (Build.VERSION.SDK_INT < 28) {
@@ -86,7 +90,7 @@ fun ImageClassificationActivity() {
     ) {
         if (it) {
             Toast.makeText(context, "Permission Granted", Toast.LENGTH_SHORT).show()
-            launcher.launch(uri)
+            launcher.launch("image/*")
         } else {
             Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
         }
@@ -95,7 +99,7 @@ fun ImageClassificationActivity() {
     LaunchedEffect(key1 = imagePredict.value) {
         if (imagePredict.value != false) {
             var result = classifyImage(bitmap!!, context)
-            Log.e("Result", result)
+            predictionResult.value = result
             imagePredict.value = false
         }
     }
@@ -110,19 +114,19 @@ fun ImageClassificationActivity() {
             val permissionCheckResult =
                 ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
             if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
-                launcher.launch(uri)
+                launcher.launch("image/*")
             } else {
                 // Request a permission
                 permissionLauncher.launch(Manifest.permission.CAMERA)
             }
         }) {
-            Text(text = "Capture Image From Camera")
+            Text(text = "Select Image")
         }
         if (imageUri?.path?.isNotEmpty() == true) {
             Image(
                 modifier = Modifier
                     .padding(16.dp, 8.dp),
-                bitmap = Bitmap.createScaledBitmap(bitmap!!, 224, 224, false).asImageBitmap(),
+                bitmap = bitmap!!.asImageBitmap(),
                 contentDescription = null
             )
         }
@@ -159,13 +163,13 @@ fun classifyImage(image: Bitmap, context: Context): String {
         inputFeature0.loadBuffer(byteBuffer)
 
         // Runs model inference and gets result.
-        val outputs: Model.Outputs = model.process(tImage.tensorBuffer)
+        val outputs: Model.Outputs = model.process(inputFeature0)
         val outputFeature0: TensorBuffer = outputs.outputFeature0AsTensorBuffer
         val confidences = outputFeature0.floatArray
-        Log.e("Result", confidences.joinToString())
+        Log.e("Confidences", confidences.joinToString())
 
         // find the index of the class with the biggest confidence.
-        val classes = arrayOf("Apple", "Banana", "Beetroot", "Bell pepper", "Cabbage", "Capsicum", "Carrot", "Cauliflower", "Chilli pepper", "Churros", "Corn", "Croissant", "Cucumber", "Custard tart", "Doughnut", "Eggplant", "Fried rice", "Garlic", "Ginger", "Grapes", "Hotdog", "Jalepeno", "Kiwi", "Lemon", "Lettuce", "Mango", "Onion", "Orange", "Pancake", "Paprika", "Pear", "Peas", "Pineapple", "Pizza", "Pomegranate", "Popcorn", "Potato", "Raddish", "Rice", "Salad", "Sandwich", "Soy beans", "Spaghetti", "Spinach", "Steak", "Sweetpotato", "Tomato", "Turnip", "Waffle", "Watermelon")
+        val classes = arrayOf("Apple", "Banana", "Beetroot", "Bell Pepper", "Cabbage", "Capsicum", "Carrot", "Cauliflower", "Chilli Pepper", "Corn", "Cucumber", "Eggplant", "Garlic", "Ginger", "Grapes", "Jalepeno", "Kiwi", "Lemon", "Lettuce", "Mango", "Onion", "Orange", "Paprika", "Pear", "Peas", "Pineapple", "Pomegranate", "Potato", "Raddish", "Rice", "Salad", "Sandwich", "Soy Beans", "Spinach", "Sweetpotato", "Tomato", "Turnip", "Watermelon")
         var maxPos = 0
         var maxConfidence = 0f
         for (i in confidences.indices) {
