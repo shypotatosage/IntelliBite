@@ -95,79 +95,117 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    val _detailrecipes: MutableLiveData<List<Recipes>>  by lazy {
-        MutableLiveData<List<Recipes>>()
+    val _detailRecipe: MutableLiveData<Recipes> by lazy {
+        MutableLiveData<Recipes>()
     }
 
-    val detailrecipes: LiveData<List<Recipes>>
-        get() = _detailrecipes
+    val detailRecipe: LiveData<Recipes>
+        get() = _detailRecipe
 
-    val _detailrecipeError: MutableLiveData<String> by lazy {
-        MutableLiveData<String>()
-    }
-
-    val detailrecipeError: LiveData<String>
-        get() = _detailrecipeError
-    fun getDetailRecipe(id: String) = viewModelScope.launch {
-        repo.getDetailRecipe(id).let { response ->
+    fun getDetailRecipe(id: String)
+            = viewModelScope.launch {
+        repo.getDetailRecipe(id).let {
+                response ->
             if (response.isSuccessful) {
                 if (response.body()?.get("message")?.asString == "success") {
-                    if (!response.body()!!.get("data").isJsonNull) {
-                        val data: JsonObject = response.body()!!.getAsJsonObject("data")
+                    var item = response.body()!!.get("data")
 
-                        var recipe_id = data.asJsonObject["id"].asString
-                        var recipe_name = data.asJsonObject["name"].asString
-                        var recipe_making_time = data.asJsonObject["making_time_in_minutes"].asInt
-                        var recipe_servings = data.asJsonObject["servings"].asInt
-                        var recipe_calories = data.asJsonObject["calories_per_portion"].asInt
-                        var recipe_fats = data.asJsonObject["fats_per_portion"].asInt
-                        var recipe_proteins = data.asJsonObject["fats_per_portion"].asInt
-                        var recipe_carbs = data.asJsonObject["proteins_per_portion"].asInt
-                        var ingredientsJson = data.asJsonObject["ingredients"].asString
-                        var nutritionsJson = data.asJsonObject["nutritions"].asString
-                        var stepsJson = data.asJsonObject["steps"].asString
+                    var recipe_id = item.asJsonObject["id"].asString
+                    var recipe_name = item.asJsonObject["name"].asString
+                    var recipe_making_time = item.asJsonObject["making_time_in_minutes"].asInt
+                    var recipe_servings = item.asJsonObject["servings"].asInt
+                    var recipe_calories = item.asJsonObject["calories_per_portion"].asInt
+                    var recipe_fats = item.asJsonObject["fats_per_portion"].asInt
+                    var recipe_proteins = item.asJsonObject["fats_per_portion"].asInt
+                    var recipe_carbs = item.asJsonObject["proteins_per_portion"].asInt
 
-                        val ingredientsList: List<Ingredients> =
-                            Gson().fromJson(ingredientsJson, object : TypeToken<List<Ingredients>>() {}.type)
+                    var ingredientsList = arrayListOf<Ingredients>()
 
-                        val nutritionsList: List<Nutrition_Profiles> =
-                            Gson().fromJson(nutritionsJson, object : TypeToken<List<Nutrition_Profiles>>() {}.type)
+                    var nutritionsList = arrayListOf<Nutrition_Profiles>()
 
-                        val stepsList: List<Steps> =
-                            Gson().fromJson(stepsJson, object : TypeToken<List<Steps>>() {}.type)
+                    var stepsList = arrayListOf<Steps>()
 
-                        var recipe = Recipes(
-                            recipe_id,
-                            recipe_name,
-                            recipe_making_time,
-                            recipe_servings,
-                            recipe_calories,
-                            recipe_fats,
-                            recipe_proteins,
-                            recipe_carbs,
-                            ingredientsList,
-                            nutritionsList,
-                            stepsList
-                        )
-
-                        var tmpArrList = arrayListOf<Recipes>()
-                        tmpArrList.add(recipe)
-
-                    }
-
-                    _detailrecipeError.value = "Success"
-
-                    Log.e("Detail Recipe Data", _detailrecipes.value.toString())
-                } else {
-                    _detailrecipeError.value = response.message()
+                    _detailRecipe.value = Recipes(
+                        recipe_id,
+                        recipe_name,
+                        recipe_making_time,
+                        recipe_servings,
+                        recipe_calories,
+                        recipe_fats,
+                        recipe_proteins,
+                        recipe_carbs,
+                        ingredientsList,
+                        nutritionsList,
+                        stepsList
+                    )
                 }
 
-                Log.d("Get Detail Recipe Data", _detailrecipeError.value.toString())
+                Log.d("Recipe Detail", response.body().toString())
             } else {
-                Log.e("Get Detail Recipe Data Error", response.message())
+                Log.e("Recipe Detail Error", response.message())
             }
         }
     }
+//    fun getDetailRecipe(id: String) = viewModelScope.launch {
+//        repo.getDetailRecipe(id).let { response ->
+//            if (response.isSuccessful) {
+//                if (response.body()?.get("message")?.asString == "success") {
+//                    if (!response.body()!!.get("data").isJsonNull) {
+//                        val data: JsonObject = response.body()!!.getAsJsonObject("data")
+//
+//                        var recipe_id = data.asJsonObject["id"].asString
+//                        var recipe_name = data.asJsonObject["name"].asString
+//                        var recipe_making_time = data.asJsonObject["making_time_in_minutes"].asInt
+//                        var recipe_servings = data.asJsonObject["servings"].asInt
+//                        var recipe_calories = data.asJsonObject["calories_per_portion"].asInt
+//                        var recipe_fats = data.asJsonObject["fats_per_portion"].asInt
+//                        var recipe_proteins = data.asJsonObject["fats_per_portion"].asInt
+//                        var recipe_carbs = data.asJsonObject["proteins_per_portion"].asInt
+//                        var ingredientsJson = data.asJsonObject["ingredients"].asString
+//                        var nutritionsJson = data.asJsonObject["nutritions"].asString
+//                        var stepsJson = data.asJsonObject["steps"].asString
+//
+//                        val ingredientsList: List<Ingredients> =
+//                            Gson().fromJson(ingredientsJson, object : TypeToken<List<Ingredients>>() {}.type)
+//
+//                        val nutritionsList: List<Nutrition_Profiles> =
+//                            Gson().fromJson(nutritionsJson, object : TypeToken<List<Nutrition_Profiles>>() {}.type)
+//
+//                        val stepsList: List<Steps> =
+//                            Gson().fromJson(stepsJson, object : TypeToken<List<Steps>>() {}.type)
+//
+//                        var recipe = Recipes(
+//                            recipe_id,
+//                            recipe_name,
+//                            recipe_making_time,
+//                            recipe_servings,
+//                            recipe_calories,
+//                            recipe_fats,
+//                            recipe_proteins,
+//                            recipe_carbs,
+//                            ingredientsList,
+//                            nutritionsList,
+//                            stepsList
+//                        )
+//
+//                        var tmpArrList = arrayListOf<Recipes>()
+//                        tmpArrList.add(recipe)
+//
+//                    }
+//
+//                    _detailrecipeError.value = "Success"
+//
+//                    Log.e("Detail Recipe Data", _detailrecipes.value.toString())
+//                } else {
+//                    _detailrecipeError.value = response.message()
+//                }
+//
+//                Log.d("Get Detail Recipe Data", _detailrecipeError.value.toString())
+//            } else {
+//                Log.e("Get Detail Recipe Data Error", response.message())
+//            }
+//        }
+//    }
     val _ingredients: MutableLiveData<List<Ingredients>> by lazy {
         MutableLiveData<List<Ingredients>>()
     }

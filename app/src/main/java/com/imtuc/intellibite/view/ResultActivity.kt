@@ -147,7 +147,7 @@ fun RecipeItem(recipe: Recipes, onClick: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
-                text = recipe.id,
+                text = recipe.name,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )

@@ -1,5 +1,6 @@
 package com.imtuc.intellibite.view
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -52,24 +53,30 @@ fun DetailRecipesActivity(
 ) {
     val context = LocalContext.current
 
-    var availableDetailsRecipe = remember {
+    var detailrecipe = remember {
         mutableStateListOf<Recipes>()
     }
 
-    var recipeDetailLoading = remember {
+    var detailrecipeloading = remember {
         mutableStateOf(true)
     }
 
-    mainViewModel.detailrecipes.observe(lifecycleOwner, Observer{
+    var recipe_name = remember {
+        mutableStateOf("")
+    }
+
+    mainViewModel.getDetailRecipe(recipeid)
+
+    mainViewModel.detailRecipe.observe(lifecycleOwner, Observer{
             response ->
-        if (mainViewModel.detailrecipeError.value == "Get Data Successful"){
-            availableDetailsRecipe.clear()
-            availableDetailsRecipe.addAll(mainViewModel.detailrecipes.value!!)
-            recipeDetailLoading.value = false
+        if (response.id.isNotEmpty()) {
+            recipe_name.value = response.name
+            detailrecipeloading.value = false
         }else{
-            recipeDetailLoading.value = true
-            Toast.makeText(context, mainViewModel.detailrecipeError.value, Toast.LENGTH_SHORT).show()
+            Log.d("The Detail Recipe is Empty", detailrecipe.toString())
         }
+
+
     })
 
     LaunchedEffect(key1 = true) {
@@ -97,11 +104,11 @@ fun DetailRecipesActivity(
 //                .verticalScroll(rememberScrollState())
         ) {
             item {
-                Text("Recipes Recommendation For You", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text("Test: ${recipe_name.value}", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             }
-            items(availableDetailsRecipe) { recipe ->
-                DetailRecipeItem(recipe = recipe)
-            }
+//            items(detailrecipe) { recipe ->
+//                DetailRecipeItem(recipe = recipe)
+//            }
 
 
             item {
@@ -111,34 +118,34 @@ fun DetailRecipesActivity(
     }
 }
 
-@Composable
-fun DetailRecipeItem(recipe: Recipes) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .shadow(4.dp)
-//            .clickable(onClick = onClick),
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            Text(
-                text = recipe.name,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "Servings: ${recipe.servings}",
-                fontSize = 14.sp
-            )
-            Text(
-                text = "Time needed: ${recipe.making_time_in_minutes} minutes",
-                fontSize = 14.sp
-            )
-        }
-    }
-}
+//@Composable
+//fun DetailRecipeItem(recipe: Recipes) {
+//    Card(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(8.dp)
+//            .shadow(4.dp)
+////            .clickable(onClick = onClick),
+//    ) {
+//        Column(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(16.dp),
+//            verticalArrangement = Arrangement.spacedBy(4.dp)
+//        ) {
+//            Text(
+//                text = recipe.id,
+//                fontSize = 18.sp,
+//                fontWeight = FontWeight.Bold
+//            )
+//            Text(
+//                text = "Servings: ${recipe.servings}",
+//                fontSize = 14.sp
+//            )
+//            Text(
+//                text = "Time needed: ${recipe.making_time_in_minutes} minutes",
+//                fontSize = 14.sp
+//            )
+//        }
+//    }
+//}
