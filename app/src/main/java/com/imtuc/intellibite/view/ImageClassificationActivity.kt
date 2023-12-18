@@ -16,6 +16,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -72,12 +74,12 @@ fun ImageClassificationActivity() {
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
         imageUri = it
 
-        imageUri?.let {
+        imageUri?.let { it ->
             if (Build.VERSION.SDK_INT < 28) {
                 bitmap = MediaStore.Images
                     .Media.getBitmap(context.contentResolver, it).copy(Bitmap.Config.ARGB_8888, true)
                 imagePredict.value = true
-            } else {
+            } else if (it.path!!.isNotEmpty()) {
                 val source = ImageDecoder.createSource(context.contentResolver, it)
                 bitmap = ImageDecoder.decodeBitmap(source).copy(Bitmap.Config.ARGB_8888, true)
                 imagePredict.value = true
@@ -107,7 +109,8 @@ fun ImageClassificationActivity() {
     Column(
         Modifier
             .fillMaxSize()
-            .padding(10.dp),
+            .padding(10.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(onClick = {
@@ -129,6 +132,9 @@ fun ImageClassificationActivity() {
                 bitmap = bitmap!!.asImageBitmap(),
                 contentDescription = null
             )
+        }
+        if (predictionResult.value != "") {
+            Text(text = predictionResult.value)
         }
     }
 }
