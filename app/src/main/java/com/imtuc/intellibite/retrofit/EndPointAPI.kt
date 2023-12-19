@@ -20,6 +20,7 @@ interface EndPointAPI {
     @GET("get-ingredients/")
     suspend fun getingredients(
     ): Response<JsonObject>
+
     @FormUrlEncoded
     @POST("get-recipes/")
     suspend fun getrecipes(

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,11 +24,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.navigation.NavHostController
@@ -82,10 +87,10 @@ fun InputNutritionProfilesActivity(
             .padding(top = 100.dp)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ingredients),
+            painter = painterResource(id = R.drawable.allergy),
             contentDescription = "Back",
             modifier = Modifier
-                .width(250.dp)
+                .scale(1.5f)
                 .align(Alignment.TopCenter)
         )
 
@@ -96,23 +101,19 @@ fun InputNutritionProfilesActivity(
                 .padding(top = 250.dp, start = 16.dp, end = 16.dp)
         ) {
             item {
-                Text("Choose Your Specific Conditions")
+                Text(
+                    "Nutrition Profiles",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(bottom = 5.dp)
+                )
+                Text("Choose Your Specific Conditions", textAlign = TextAlign.Center)
             }
-//            items(availableNutritionProfile) { nutrition ->
-//                DiseasesCheckbox(
-//                    nutrition = nutrition,
-//                    onCheckedChange = { isChecked ->
-//                        if (isChecked) {
-//                            ownedNutritionProfile.add(nutrition.id)
-//                        } else {
-//                            ownedNutritionProfile.remove(nutrition.id)
-//                        }
-//                    }
-//                )
-//            }
 
 
-                items(availableNutritionProfile) { nutrition ->
+            items(availableNutritionProfile) { nutrition ->
                     DiseasesCheckbox(
                         nutrition = nutrition,
                         onCheckedChange = { isChecked ->

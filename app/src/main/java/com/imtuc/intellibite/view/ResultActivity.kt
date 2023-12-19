@@ -95,21 +95,15 @@ fun ResultActivity(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .padding(top = 100.dp)
+//            .padding(top = 100.dp)
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ingredients),
-            contentDescription = "Back",
-            modifier = Modifier
-                .width(250.dp)
-                .align(Alignment.TopCenter)
-        )
+
 
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .padding(top = 250.dp, start = 16.dp, end = 16.dp)
+                .padding(top = 30.dp, start = 16.dp, end = 16.dp)
 //                .verticalScroll(rememberScrollState())
         ) {
             item {

@@ -27,7 +27,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.navigation.NavHostController
@@ -87,7 +90,7 @@ fun InputIngredientsActivity(
             .padding(top = 100.dp)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ingredients),
+            painter = painterResource(id = R.drawable.vegetables),
             contentDescription = "Back",
             modifier = Modifier
                 .width(250.dp)
@@ -100,6 +103,18 @@ fun InputIngredientsActivity(
                 .fillMaxHeight()
                 .padding(top = 250.dp, start = 16.dp, end = 16.dp)
         ) {
+            item {
+                Text(
+                    "Ingredients",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(bottom = 5.dp)
+                )
+                Text("Choose Your Ingredients", textAlign = TextAlign.Center)
+            }
+
             items(availableIngredients) { ingredient ->
                 IngredientCheckbox(
                     ingredient = ingredient,
@@ -112,13 +127,16 @@ fun InputIngredientsActivity(
                     }
                 )
             }
-
             item {
-                // Remove trailing comma
-                Text(text = ownedIngredients.trimEnd(','))
-
                 Spacer(modifier = Modifier.height(16.dp))
             }
+
+//            item {
+//                // Remove trailing comma
+//                Text(text = ownedIngredients.trimEnd(','))
+//
+//                Spacer(modifier = Modifier.height(16.dp))
+//            }
 
             item {
                 Button(

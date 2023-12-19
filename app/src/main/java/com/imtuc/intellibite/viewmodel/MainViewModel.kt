@@ -5,12 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
 import com.google.gson.JsonArray
-import com.google.gson.JsonObject
-import com.google.gson.reflect.TypeToken
 import com.imtuc.intellibite.model.Ingredients
 import com.imtuc.intellibite.model.Nutrition_Profiles
+import com.imtuc.intellibite.model.Recipe_Ingredients
 import com.imtuc.intellibite.model.Recipes
 import com.imtuc.intellibite.model.Steps
 import com.imtuc.intellibite.repository.ItemRepository
@@ -20,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val repo: ItemRepository
-) : ViewModel(){
+) : ViewModel() {
     val _recipes: MutableLiveData<List<Recipes>> by lazy {
         MutableLiveData<List<Recipes>>()
     }
@@ -51,14 +49,15 @@ class MainViewModel @Inject constructor(
                         for (item in arr) {
                             var recipe_id = item.asJsonObject["id"].asString
                             var recipe_name = item.asJsonObject["name"].asString
-                            var recipe_making_time = item.asJsonObject["making_time_in_minutes"].asInt
+                            var recipe_making_time =
+                                item.asJsonObject["making_time_in_minutes"].asInt
                             var recipe_servings = item.asJsonObject["servings"].asInt
                             var recipe_calories = item.asJsonObject["calories_per_portion"].asInt
                             var recipe_fats = item.asJsonObject["fats_per_portion"].asInt
                             var recipe_proteins = item.asJsonObject["fats_per_portion"].asInt
                             var recipe_carbs = item.asJsonObject["proteins_per_portion"].asInt
 
-                            var ingredientsList = arrayListOf<Ingredients>()
+                            var ingredientsList = arrayListOf<Recipe_Ingredients>()
 
                             var nutritionsList = arrayListOf<Nutrition_Profiles>()
 
@@ -102,13 +101,11 @@ class MainViewModel @Inject constructor(
     val detailRecipe: LiveData<Recipes>
         get() = _detailRecipe
 
-    fun getDetailRecipe(id: String)
-            = viewModelScope.launch {
-        repo.getDetailRecipe(id).let {
-                response ->
+    fun getDetailRecipe(id: String) = viewModelScope.launch {
+        repo.getDetailRecipe(id).let { response ->
             if (response.isSuccessful) {
                 if (response.body()?.get("message")?.asString == "success") {
-                    var item = response.body()!!.get("data")
+                    var item = response.body()!!.getAsJsonObject("data")
 
                     var recipe_id = item.asJsonObject["id"].asString
                     var recipe_name = item.asJsonObject["name"].asString
@@ -116,14 +113,79 @@ class MainViewModel @Inject constructor(
                     var recipe_servings = item.asJsonObject["servings"].asInt
                     var recipe_calories = item.asJsonObject["calories_per_portion"].asInt
                     var recipe_fats = item.asJsonObject["fats_per_portion"].asInt
-                    var recipe_proteins = item.asJsonObject["fats_per_portion"].asInt
-                    var recipe_carbs = item.asJsonObject["proteins_per_portion"].asInt
+                    var recipe_proteins = item.asJsonObject["proteins_per_portion"].asInt
+                    var recipe_carbs = item.asJsonObject["carbs_per_portion"].asInt
 
-                    var ingredientsList = arrayListOf<Ingredients>()
+                    var ingredientsList = arrayListOf<Recipe_Ingredients>()
+                    ingredientsList.clear()
+
+                    if (!item.get("ingredients").isJsonNull) {
+                        var ingredients = item.getAsJsonArray("ingredients")
+
+                        for (item in ingredients) {
+                            var ingredient_id = item.asJsonObject["id"].asString
+                            var ingredient_quantity = item.asJsonObject["quantity"].asInt
+                            var ingredient_description = item.asJsonObject["description"].asString
+                            var ingredient_description_step: String? = item.asJsonObject["description_steps"]?.asString
+                            var ingredient_name = item.asJsonObject["name"].asString
+                            var ingredient_unit = item.asJsonObject["unit"].asString
+                            var ingredient_recipe_id = item.asJsonObject["recipe_id"].asInt
+                            var ingredient_ingredient_id = item.asJsonObject["ingredient_id"].asInt
+
+
+                            var ingredient = Recipe_Ingredients(
+                                ingredient_id,
+                                ingredient_quantity,
+                                ingredient_description,
+                                ingredient_description_step,
+                                ingredient_unit,
+                                ingredient_recipe_id,
+                                ingredient_ingredient_id,
+                                ingredient_name,
+                            )
+
+                            ingredientsList.add(ingredient)
+                        }
+                    }
 
                     var nutritionsList = arrayListOf<Nutrition_Profiles>()
+                    nutritionsList.clear()
 
+                    if (!item.get("nutrition_profiles").isJsonNull) {
+                        var nutritions = item.getAsJsonArray("nutrition_profiles")
+
+                        for (item in nutritions) {
+                            var nutrition_id = item.asJsonObject["id"].asString
+                            var nutrition_name = item.asJsonObject["name"].asString
+
+
+                            var nutrition = Nutrition_Profiles(
+                                nutrition_id,
+                                nutrition_name,
+                            )
+
+                            nutritionsList.add(nutrition)
+                        }
+                    }
                     var stepsList = arrayListOf<Steps>()
+                    stepsList.clear()
+
+                    if (!item.get("steps").isJsonNull) {
+                        var steps = item.getAsJsonArray("steps")
+
+                        for (item in steps) {
+                            var step_id = item.asJsonObject["id"].asString
+                            var step_description = item.asJsonObject["description"].asString
+
+
+                            var steps = Steps(
+                                step_id,
+                                step_description,
+                            )
+
+                            stepsList.add(steps)
+                        }
+                    }
 
                     _detailRecipe.value = Recipes(
                         recipe_id,
@@ -146,66 +208,7 @@ class MainViewModel @Inject constructor(
             }
         }
     }
-//    fun getDetailRecipe(id: String) = viewModelScope.launch {
-//        repo.getDetailRecipe(id).let { response ->
-//            if (response.isSuccessful) {
-//                if (response.body()?.get("message")?.asString == "success") {
-//                    if (!response.body()!!.get("data").isJsonNull) {
-//                        val data: JsonObject = response.body()!!.getAsJsonObject("data")
-//
-//                        var recipe_id = data.asJsonObject["id"].asString
-//                        var recipe_name = data.asJsonObject["name"].asString
-//                        var recipe_making_time = data.asJsonObject["making_time_in_minutes"].asInt
-//                        var recipe_servings = data.asJsonObject["servings"].asInt
-//                        var recipe_calories = data.asJsonObject["calories_per_portion"].asInt
-//                        var recipe_fats = data.asJsonObject["fats_per_portion"].asInt
-//                        var recipe_proteins = data.asJsonObject["fats_per_portion"].asInt
-//                        var recipe_carbs = data.asJsonObject["proteins_per_portion"].asInt
-//                        var ingredientsJson = data.asJsonObject["ingredients"].asString
-//                        var nutritionsJson = data.asJsonObject["nutritions"].asString
-//                        var stepsJson = data.asJsonObject["steps"].asString
-//
-//                        val ingredientsList: List<Ingredients> =
-//                            Gson().fromJson(ingredientsJson, object : TypeToken<List<Ingredients>>() {}.type)
-//
-//                        val nutritionsList: List<Nutrition_Profiles> =
-//                            Gson().fromJson(nutritionsJson, object : TypeToken<List<Nutrition_Profiles>>() {}.type)
-//
-//                        val stepsList: List<Steps> =
-//                            Gson().fromJson(stepsJson, object : TypeToken<List<Steps>>() {}.type)
-//
-//                        var recipe = Recipes(
-//                            recipe_id,
-//                            recipe_name,
-//                            recipe_making_time,
-//                            recipe_servings,
-//                            recipe_calories,
-//                            recipe_fats,
-//                            recipe_proteins,
-//                            recipe_carbs,
-//                            ingredientsList,
-//                            nutritionsList,
-//                            stepsList
-//                        )
-//
-//                        var tmpArrList = arrayListOf<Recipes>()
-//                        tmpArrList.add(recipe)
-//
-//                    }
-//
-//                    _detailrecipeError.value = "Success"
-//
-//                    Log.e("Detail Recipe Data", _detailrecipes.value.toString())
-//                } else {
-//                    _detailrecipeError.value = response.message()
-//                }
-//
-//                Log.d("Get Detail Recipe Data", _detailrecipeError.value.toString())
-//            } else {
-//                Log.e("Get Detail Recipe Data Error", response.message())
-//            }
-//        }
-//    }
+
     val _ingredients: MutableLiveData<List<Ingredients>> by lazy {
         MutableLiveData<List<Ingredients>>()
     }
@@ -315,6 +318,5 @@ class MainViewModel @Inject constructor(
             }
         }
     }
-
 
 }
