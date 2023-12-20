@@ -25,7 +25,7 @@ fun SetupNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Splash.route
+        startDestination = Screen.ImageClassification.route
     ) {
         composable(
             route = Screen.Splash.route
@@ -102,7 +102,7 @@ fun SetupNavGraph(
         composable(
             route = Screen.ImageClassification.route
         ) {
-            ImageClassificationActivity()
+            ImageClassificationActivity(mainViewModel, lifecycleOwner)
         }
     }
 }

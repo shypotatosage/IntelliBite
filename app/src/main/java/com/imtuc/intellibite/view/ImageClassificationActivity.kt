@@ -13,13 +13,18 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
-import androidx.compose.material.Text
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,14 +33,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.imtuc.intellibite.ml.Model
+import com.imtuc.intellibite.model.FruitVegetables
+import com.imtuc.intellibite.ui.theme.DarkGreen
 import com.imtuc.intellibite.viewmodel.MainViewModel
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.support.image.ImageProcessor
@@ -59,36 +70,112 @@ fun ImageClassificationActivity(mainViewModel: MainViewModel, lifecycleOwner: Li
         mutableStateOf(false)
     }
 
-    val fruitVegetablesResult = remember {
-        mutableStateOf(false)
+    val fruitVegetablesName = remember {
+        mutableStateOf("")
+    }
+
+    val fruitVegetablesServingsInGrams = remember {
+        mutableStateOf(0)
+    }
+
+    val fruitVegetablesCalories = remember {
+        mutableStateOf(0)
+    }
+
+    val fruitVegetablesTotalFat = remember {
+        mutableStateOf(0.0)
+    }
+
+    val fruitVegetablesSaturatedFat = remember {
+        mutableStateOf(0.0)
+    }
+
+    val fruitVegetablesTransFat = remember {
+        mutableStateOf(0.0)
+    }
+
+    val fruitVegetablesPolyunsaturatedFat = remember {
+        mutableStateOf(0.0)
+    }
+
+    val fruitVegetablesMonounsaturatedFat = remember {
+        mutableStateOf(0.0)
+    }
+
+    val fruitVegetablesCarbohydrate = remember {
+        mutableStateOf(0.0)
+    }
+
+    val fruitVegetablesProtein = remember {
+        mutableStateOf(0.0)
+    }
+
+    val fruitVegetablesFiber = remember {
+        mutableStateOf(0.0)
+    }
+
+    val fruitVegetablesSugar = remember {
+        mutableStateOf(0.0)
+    }
+
+    val fruitVegetablesCholesterol = remember {
+        mutableStateOf(0.0)
+    }
+
+    val fruitVegetablesSodium = remember {
+        mutableStateOf(0.0)
+    }
+
+    val fruitVegetablesVitaminD = remember {
+        mutableStateOf(0.0)
+    }
+
+    val fruitVegetablesCalcium = remember {
+        mutableStateOf(0.0)
+    }
+
+    val fruitVegetablesIron = remember {
+        mutableStateOf(0.0)
+    }
+
+    val fruitVegetablesPotassium = remember {
+        mutableStateOf(0.0)
+    }
+
+    val fruitVegetablesCaffeine = remember {
+        mutableStateOf(0.0)
     }
 
     val context = LocalContext.current
 
     val file = File(context.filesDir, "external_files")
 
-    val uri = FileProvider.getUriForFile(Objects.requireNonNull(context),
-        context.packageName + ".provider", file);
+    val uri = FileProvider.getUriForFile(
+        Objects.requireNonNull(context),
+        context.packageName + ".provider", file
+    );
 
     var bitmap by remember {
         mutableStateOf<Bitmap?>(null)
     }
 
-    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
-        imageUri = it
+    val launcher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
+            imageUri = it
 
-        imageUri?.let { it ->
-            if (Build.VERSION.SDK_INT < 28) {
-                bitmap = MediaStore.Images
-                    .Media.getBitmap(context.contentResolver, it).copy(Bitmap.Config.ARGB_8888, true)
-                imagePredict.value = true
-            } else if (it.path!!.isNotEmpty()) {
-                val source = ImageDecoder.createSource(context.contentResolver, it)
-                bitmap = ImageDecoder.decodeBitmap(source).copy(Bitmap.Config.ARGB_8888, true)
-                imagePredict.value = true
+            imageUri?.let { it ->
+                if (Build.VERSION.SDK_INT < 28) {
+                    bitmap = MediaStore.Images
+                        .Media.getBitmap(context.contentResolver, it)
+                        .copy(Bitmap.Config.ARGB_8888, true)
+                    imagePredict.value = true
+                } else if (it.path!!.isNotEmpty()) {
+                    val source = ImageDecoder.createSource(context.contentResolver, it)
+                    bitmap = ImageDecoder.decodeBitmap(source).copy(Bitmap.Config.ARGB_8888, true)
+                    imagePredict.value = true
+                }
             }
         }
-    }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -101,52 +188,175 @@ fun ImageClassificationActivity(mainViewModel: MainViewModel, lifecycleOwner: Li
         }
     }
 
-    mainViewModel.fruitVegetables.observe(lifecycleOwner, Observer{
-            response ->
-        if (mainViewModel.fruitVegetablesError.value == "Get Data Successful"){
-            fruitVegetablesResult.value = true
-        } else {
-            Toast.makeText(context, mainViewModel.fruitVegetablesError.value, Toast.LENGTH_SHORT).show()
+    mainViewModel.fruitVegetablesError.observe(lifecycleOwner, Observer { response ->
+        if (mainViewModel.fruitVegetablesError.value == "Success") {
+            var fruitVegetable = mainViewModel.fruitVegetables.value
+            fruitVegetablesName.value = fruitVegetable!!.name
+            fruitVegetablesServingsInGrams.value = fruitVegetable.servings_in_grams
+            fruitVegetablesCalories.value = fruitVegetable.calories
+            fruitVegetablesTotalFat.value = fruitVegetable.total_fat
+            fruitVegetablesSaturatedFat.value = fruitVegetable.saturated_fat
+            fruitVegetablesTransFat.value = fruitVegetable.trans_fat
+            fruitVegetablesPolyunsaturatedFat.value = fruitVegetable.polyunsaturated_fat
+            fruitVegetablesMonounsaturatedFat.value = fruitVegetable.monounsaturated_fat
+            fruitVegetablesCholesterol.value = fruitVegetable.cholesterol
+            fruitVegetablesSodium.value = fruitVegetable.sodium
+            fruitVegetablesCarbohydrate.value = fruitVegetable.carbohydrate
+            fruitVegetablesVitaminD.value = fruitVegetable.vitamind
+            fruitVegetablesCalcium.value = fruitVegetable.calcium
+            fruitVegetablesIron.value = fruitVegetable.iron
+            fruitVegetablesPotassium.value = fruitVegetable.potassium
+            fruitVegetablesCaffeine.value = fruitVegetable.caffeine
+
+            Log.e("Response", response.toString())
+        } else if (mainViewModel.fruitVegetablesError.value != "") {
+            Toast.makeText(context, mainViewModel.fruitVegetablesError.value, Toast.LENGTH_SHORT)
+                .show()
         }
     })
 
     LaunchedEffect(key1 = imagePredict.value) {
         if (imagePredict.value != false) {
             var result = classifyImage(bitmap!!, context)
+            Log.e("Result", result)
             mainViewModel.getFruitVegetables(result)
             imagePredict.value = false
         }
     }
 
     Column(
-        Modifier
-            .fillMaxSize()
-            .padding(10.dp)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
     ) {
-        Button(onClick = {
-            val permissionCheckResult =
-                ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
-            if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
-                launcher.launch("image/*")
-            } else {
-                // Request a permission
-                permissionLauncher.launch(Manifest.permission.CAMERA)
-            }
-        }) {
-            Text(text = "Select Image")
-        }
-        if (imageUri?.path?.isNotEmpty() == true) {
-            Image(
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Button(
+                onClick = {
+                    val permissionCheckResult =
+                        ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                    if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
+                        launcher.launch("image/*")
+                    } else {
+                        // Request a permission
+                        permissionLauncher.launch(Manifest.permission.CAMERA)
+                    }
+                },
                 modifier = Modifier
-                    .padding(16.dp, 8.dp),
-                bitmap = bitmap!!.asImageBitmap(),
-                contentDescription = null
-            )
-        }
-        if (fruitVegetablesResult.value) {
-            Text(text = mainViewModel.fruitVegetables.value?.name ?: "")
+                    .padding(8.dp, 0.dp),
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(backgroundColor = DarkGreen)
+            ) {
+                Text(text = "Select Image", color = Color.White, fontWeight = FontWeight.Bold)
+            }
+            if (imageUri?.path?.isNotEmpty() == true) {
+                Image(
+                    modifier = Modifier
+                        .padding(16.dp, 8.dp),
+                    bitmap = bitmap!!.asImageBitmap(),
+                    contentDescription = null
+                )
+            }
+            if (fruitVegetablesName.value != "") {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        "${fruitVegetablesName.value}",
+                        fontSize = 25.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        "Servings : ${fruitVegetablesServingsInGrams.value}g",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        "Calories : 95",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Divider(
+                        color = Color.Black,
+                        thickness = 2.dp,
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
+                    Text(
+                        "Total Fat : ${fruitVegetablesTotalFat.value}g",
+                        style = TextStyle(fontWeight = FontWeight.Bold),
+                        fontSize = 18.sp
+                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp, 0.dp, 0.dp, 0.dp),
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        Text(
+                            "Saturated Fat : ${fruitVegetablesSaturatedFat.value}g",
+                        )
+                        Text(
+                            "Trans Fat : ${fruitVegetablesTransFat.value}g",
+                        )
+                        Text(
+                            "Polyunsaturated Fat : ${fruitVegetablesPolyunsaturatedFat.value}g",
+                        )
+                        Text(
+                            "Monounsaturated Fat : ${fruitVegetablesMonounsaturatedFat.value}g",
+                        )
+                    }
+                    Text(
+                        "Cholesterol : ${fruitVegetablesCholesterol.value}mg",
+                        style = TextStyle(fontWeight = FontWeight.Bold),
+                        fontSize = 18.sp
+                    )
+                    Text(
+                        "Sodium : ${fruitVegetablesSodium.value}mg",
+                        style = TextStyle(fontWeight = FontWeight.Bold),
+                        fontSize = 18.sp
+                    )
+                    Text(
+                        "Total Carbohydrates : ${fruitVegetablesCarbohydrate.value}g",
+                        style = TextStyle(fontWeight = FontWeight.Bold),
+                        fontSize = 18.sp
+                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp, 0.dp, 0.dp, 0.dp),
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        Text(
+                            "Vitamin D : ${fruitVegetablesVitaminD.value}mcg",
+                        )
+                        Text(
+                            "Calcium : ${fruitVegetablesCalcium.value}mg",
+                        )
+                        Text(
+                            "Iron : ${fruitVegetablesIron.value}mg",
+                        )
+                        Text(
+                            "Potassium : ${fruitVegetablesPotassium.value}mg",
+                        )
+                    }
+                    Divider(
+                        color = Color.Black,
+                        thickness = 2.dp,
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
+                    Text(
+                        "Caffeine : ${fruitVegetablesCaffeine.value}mg",
+                        style = TextStyle(fontWeight = FontWeight.Bold),
+                        fontSize = 18.sp
+                    )
+                }
+            }
         }
     }
 }
@@ -157,7 +367,8 @@ fun classifyImage(image: Bitmap, context: Context): String {
         val model: Model = Model.newInstance(context)
 
         // Creates inputs for reference.
-        val inputFeature0 = TensorBuffer.createFixedSize(intArrayOf(1, 224, 224, 3), DataType.FLOAT32)
+        val inputFeature0 =
+            TensorBuffer.createFixedSize(intArrayOf(1, 224, 224, 3), DataType.FLOAT32)
         val byteBuffer = ByteBuffer.allocateDirect(4 * 224 * 224 * 3)
         byteBuffer.order(ByteOrder.nativeOrder())
         val intValues = IntArray(224 * 224)
@@ -181,14 +392,52 @@ fun classifyImage(image: Bitmap, context: Context): String {
         Log.e("Confidences", confidences.joinToString())
 
         // find the index of the class with the biggest confidence.
-        val classes = arrayOf("Apple", "Banana", "Beetroot", "Bell Pepper", "Cabbage", "Capsicum", "Carrot", "Cauliflower", "Chilli Pepper", "Corn", "Cucumber", "Eggplant", "Garlic", "Ginger", "Grapes", "Jalepeno", "Kiwi", "Lemon", "Lettuce", "Mango", "Onion", "Orange", "Paprika", "Pear", "Peas", "Pineapple", "Pomegranate", "Potato", "Raddish", "Rice", "Salad", "Sandwich", "Soy Beans", "Spinach", "Sweetpotato", "Tomato", "Turnip", "Watermelon")
+        val classes = arrayOf(
+            "Apple",
+            "Banana",
+            "Beetroot",
+            "Bell Pepper",
+            "Cabbage",
+            "Capsicum",
+            "Carrot",
+            "Cauliflower",
+            "Chilli Pepper",
+            "Corn",
+            "Cucumber",
+            "Eggplant",
+            "Garlic",
+            "Ginger",
+            "Grapes",
+            "Jalepeno",
+            "Kiwi",
+            "Lemon",
+            "Lettuce",
+            "Mango",
+            "Onion",
+            "Orange",
+            "Paprika",
+            "Pear",
+            "Peas",
+            "Pineapple",
+            "Pomegranate",
+            "Potato",
+            "Raddish",
+            "Rice",
+            "Salad",
+            "Sandwich",
+            "Soy Beans",
+            "Spinach",
+            "Sweetpotato",
+            "Tomato",
+            "Turnip",
+            "Watermelon"
+        )
         var maxPos = 0
         var maxConfidence = 0f
         for (i in confidences.indices) {
             if (confidences[i] > maxConfidence) {
                 maxConfidence = confidences[i]
                 maxPos = i
-                Log.e("Result", classes[i].toString())
             }
         }
 

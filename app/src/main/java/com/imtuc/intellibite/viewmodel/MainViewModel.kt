@@ -239,7 +239,7 @@ class MainViewModel @Inject constructor(
                     if (!response.body()!!.get("data").isJsonNull) {
                         val data: JsonObject = response.body()!!.getAsJsonObject("data")
 
-                        var name = data.asJsonObject["name"].asString
+                        var fruitVegetablesName = data.asJsonObject["name"].asString
                         var servings_in_grams = data.asJsonObject["servings_in_grams"].asInt
                         var calories = data.asJsonObject["calories"].asInt
                         var total_fat = data.asJsonObject["total_fat"].asDouble
@@ -259,7 +259,7 @@ class MainViewModel @Inject constructor(
                         var potassium = data.asJsonObject["potassium"].asDouble
                         var caffeine = data.asJsonObject["caffeine"].asDouble
 
-                        var fruitVegetables = FruitVegetables(name, servings_in_grams, calories, total_fat, saturated_fat, trans_fat, polyunsaturated_fat, monounsaturated_fat, carbohydrate, protein, fiber, sugar, cholesterol, sodium, vitamind, calcium, iron, potassium, caffeine)
+                        var fruitVegetables = FruitVegetables(fruitVegetablesName, servings_in_grams, calories, total_fat, saturated_fat, trans_fat, polyunsaturated_fat, monounsaturated_fat, carbohydrate, protein, fiber, sugar, cholesterol, sodium, vitamind, calcium, iron, potassium, caffeine)
 
                         _fruitVegetables.value = fruitVegetables
                     }
