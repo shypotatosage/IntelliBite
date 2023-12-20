@@ -33,7 +33,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import com.imtuc.intellibite.ml.Model
+import com.imtuc.intellibite.viewmodel.MainViewModel
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.support.image.ImageProcessor
 import org.tensorflow.lite.support.image.TensorImage
@@ -47,7 +50,7 @@ import java.util.Objects
 
 
 @Composable
-fun ImageClassificationActivity() {
+fun ImageClassificationActivity(mainViewModel: MainViewModel, lifecycleOwner: LifecycleOwner) {
     var imageUri by remember {
         mutableStateOf<Uri?>(null)
     }
@@ -56,8 +59,8 @@ fun ImageClassificationActivity() {
         mutableStateOf(false)
     }
 
-    val predictionResult = remember {
-        mutableStateOf("")
+    val fruitVegetablesResult = remember {
+        mutableStateOf(false)
     }
 
     val context = LocalContext.current
@@ -98,10 +101,19 @@ fun ImageClassificationActivity() {
         }
     }
 
+    mainViewModel.fruitVegetables.observe(lifecycleOwner, Observer{
+            response ->
+        if (mainViewModel.fruitVegetablesError.value == "Get Data Successful"){
+            fruitVegetablesResult.value = true
+        } else {
+            Toast.makeText(context, mainViewModel.fruitVegetablesError.value, Toast.LENGTH_SHORT).show()
+        }
+    })
+
     LaunchedEffect(key1 = imagePredict.value) {
         if (imagePredict.value != false) {
             var result = classifyImage(bitmap!!, context)
-            predictionResult.value = result
+            mainViewModel.getFruitVegetables(result)
             imagePredict.value = false
         }
     }
@@ -133,20 +145,14 @@ fun ImageClassificationActivity() {
                 contentDescription = null
             )
         }
-        if (predictionResult.value != "") {
-            Text(text = predictionResult.value)
+        if (fruitVegetablesResult.value) {
+            Text(text = mainViewModel.fruitVegetables.value?.name ?: "")
         }
     }
 }
 
 fun classifyImage(image: Bitmap, context: Context): String {
     try {
-        val imageProcessor = ImageProcessor.Builder()
-            .add(ResizeOp(224, 224, ResizeOp.ResizeMethod.BILINEAR))
-            .build()
-        var tImage = TensorImage(DataType.FLOAT32)
-        tImage.load(image)
-        tImage = imageProcessor.process(tImage)
         val newImage = Bitmap.createScaledBitmap(image, 224, 224, false)
         val model: Model = Model.newInstance(context)
 

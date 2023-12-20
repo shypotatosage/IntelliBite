@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import com.imtuc.intellibite.model.FruitVegetables
 import com.imtuc.intellibite.model.Ingredients
 import com.imtuc.intellibite.model.Nutrition_Profiles
 import com.imtuc.intellibite.model.Recipe_Ingredients
@@ -100,6 +102,13 @@ class MainViewModel @Inject constructor(
 
     val detailRecipe: LiveData<Recipes>
         get() = _detailRecipe
+
+    val _detailrecipeError: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
+
+    val detailrecipeError: LiveData<String>
+        get() = _detailrecipeError
 
     fun getDetailRecipe(id: String) = viewModelScope.launch {
         repo.getDetailRecipe(id).let { response ->
@@ -205,6 +214,66 @@ class MainViewModel @Inject constructor(
                 Log.d("Recipe Detail", response.body().toString())
             } else {
                 Log.e("Recipe Detail Error", response.message())
+            }
+        }
+    }
+
+    val _fruitVegetables: MutableLiveData<FruitVegetables> by lazy {
+        MutableLiveData<FruitVegetables>()
+    }
+
+    val fruitVegetables: LiveData<FruitVegetables>
+        get() = _fruitVegetables
+
+    val _fruitVegetablesError: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
+
+    val fruitVegetablesError: LiveData<String>
+        get() = _fruitVegetablesError
+
+    fun getFruitVegetables(name: String) = viewModelScope.launch {
+        repo.getFruitVegetables(name).let { response ->
+            if (response.isSuccessful) {
+                if (response.body()?.get("message")?.asString == "success") {
+                    if (!response.body()!!.get("data").isJsonNull) {
+                        val data: JsonObject = response.body()!!.getAsJsonObject("data")
+
+                        var name = data.asJsonObject["name"].asString
+                        var servings_in_grams = data.asJsonObject["servings_in_grams"].asInt
+                        var calories = data.asJsonObject["calories"].asInt
+                        var total_fat = data.asJsonObject["total_fat"].asDouble
+                        var saturated_fat = data.asJsonObject["saturated_fat"].asDouble
+                        var trans_fat = data.asJsonObject["trans_fat"].asDouble
+                        var polyunsaturated_fat = data.asJsonObject["polyunsaturated_fat"].asDouble
+                        var monounsaturated_fat = data.asJsonObject["monounsaturated_fat"].asDouble
+                        var carbohydrate = data.asJsonObject["carbohydrate"].asDouble
+                        var protein = data.asJsonObject["protein"].asDouble
+                        var fiber = data.asJsonObject["fiber"].asDouble
+                        var sugar = data.asJsonObject["sugar"].asDouble
+                        var cholesterol = data.asJsonObject["cholesterol"].asDouble
+                        var sodium = data.asJsonObject["sodium"].asDouble
+                        var vitamind = data.asJsonObject["vitamind"].asDouble
+                        var calcium = data.asJsonObject["calcium"].asDouble
+                        var iron = data.asJsonObject["iron"].asDouble
+                        var potassium = data.asJsonObject["potassium"].asDouble
+                        var caffeine = data.asJsonObject["caffeine"].asDouble
+
+                        var fruitVegetables = FruitVegetables(name, servings_in_grams, calories, total_fat, saturated_fat, trans_fat, polyunsaturated_fat, monounsaturated_fat, carbohydrate, protein, fiber, sugar, cholesterol, sodium, vitamind, calcium, iron, potassium, caffeine)
+
+                        _fruitVegetables.value = fruitVegetables
+                    }
+
+                    _fruitVegetablesError.value = "Success"
+
+                    Log.e("Fruit Vegetables Data", _fruitVegetables.value.toString())
+                } else {
+                    _fruitVegetablesError.value = response.message()
+                }
+
+                Log.d("Get Fruit Vegetables Data", _fruitVegetablesError.value.toString())
+            } else {
+                Log.e("Get Fruit Vegetables Data Error", response.message())
             }
         }
     }

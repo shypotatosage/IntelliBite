@@ -19,8 +19,13 @@ class ItemRepository @Inject constructor(
     suspend fun getNutritionProfile(
 
     ) = api.getnutritionprofiles()
+
     suspend fun getDetailRecipe(
         id: String
     ) = api.getdetailrecipe(id)
+
+    suspend fun getFruitVegetables(
+        name: String
+    ) = api.getFruitVegetables(name)
 
 }

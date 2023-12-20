@@ -14,9 +14,11 @@ interface EndPointAPI {
     suspend fun getdetailrecipe(
         @Path("id") id: String,
         ): Response<JsonObject>
+
     @GET("get-nutrition-profiles/")
     suspend fun getnutritionprofiles(
     ): Response<JsonObject>
+
     @GET("get-ingredients/")
     suspend fun getingredients(
     ): Response<JsonObject>
@@ -26,5 +28,10 @@ interface EndPointAPI {
     suspend fun getrecipes(
         @Field("ingredients") ingredients: String,
         @Field("nutrition_profiles") nutrition_profiles: String
+    ): Response<JsonObject>
+
+    @GET("get-fruitvegetables/{name}")
+    suspend fun getFruitVegetables(
+        @Path("name") name: String,
     ): Response<JsonObject>
 }
