@@ -1,6 +1,9 @@
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -84,21 +87,24 @@ fun InputNutritionProfilesActivity(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .padding(top = 100.dp)
+            .padding(top = 100.dp),
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.allergy),
-            contentDescription = "Back",
-            modifier = Modifier
-                .scale(1.5f)
-                .align(Alignment.TopCenter)
-        )
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.allergy),
+                contentDescription = "Nutrition Profiles"
+            )
+        }
 
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .padding(top = 250.dp, start = 16.dp, end = 16.dp)
+                .padding(top = 200.dp, start = 16.dp, end = 16.dp)
         ) {
             item {
                 Text(
@@ -106,10 +112,15 @@ fun InputNutritionProfilesActivity(
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(bottom = 5.dp)
                 )
-                Text("Choose Your Specific Conditions", textAlign = TextAlign.Center)
+                Text(
+                    "Choose Your Specific Conditions",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
             }
 
 

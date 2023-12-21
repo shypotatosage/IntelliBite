@@ -27,7 +27,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -101,7 +103,7 @@ fun InputIngredientsActivity(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .padding(top = 250.dp, start = 16.dp, end = 16.dp)
+                .padding(top = 200.dp, start = 16.dp, end = 16.dp)
         ) {
             item {
                 Text(
@@ -112,7 +114,11 @@ fun InputIngredientsActivity(
                     modifier = Modifier.fillMaxWidth()
                         .padding(bottom = 5.dp)
                 )
-                Text("Choose Your Ingredients", textAlign = TextAlign.Center)
+                Text(
+                    "Choose Your Ingredients",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
             }
 
             items(availableIngredients) { ingredient ->
@@ -179,7 +185,7 @@ fun IngredientCheckbox(ingredient: Ingredients, onCheckedChange: (Boolean) -> Un
 //            colors = CheckboxDefaults.colors(checkedColor = Color.Green) // Set checkbox color to green
         )
         Text(
-            text = ingredient.name,
+            text = ingredient.name.capitalize(Locale.current),
             modifier = Modifier.padding(start = 16.dp)
         )
     }

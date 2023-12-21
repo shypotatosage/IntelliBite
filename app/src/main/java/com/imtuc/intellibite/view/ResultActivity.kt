@@ -2,6 +2,7 @@ package com.imtuc.intellibite.view
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +25,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -55,6 +57,7 @@ import com.imtuc.intellibite.model.Ingredients
 import com.imtuc.intellibite.model.Nutrition_Profiles
 import com.imtuc.intellibite.model.Recipes
 import com.imtuc.intellibite.navigation.Screen
+import com.imtuc.intellibite.ui.theme.GreenPastel
 import com.imtuc.intellibite.viewmodel.MainViewModel
 
 @Composable
@@ -107,7 +110,12 @@ fun ResultActivity(
 //                .verticalScroll(rememberScrollState())
         ) {
             item {
-                Text("Recipes Recommendation For You", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    "Recipes Recommendation For You",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
             }
             items(availableRecipe) { recipe ->
                 RecipeItem(recipe = recipe, onClick = {
@@ -127,12 +135,13 @@ fun ResultActivity(
 
 @Composable
 fun RecipeItem(recipe: Recipes, onClick: () -> Unit) {
-    Card(
+    Surface(
+        shape = RoundedCornerShape(16.dp),
+        shadowElevation = 6.dp,
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .shadow(4.dp)
-            .clickable(onClick = onClick),
+            .clickable(onClick = onClick)
     ) {
         Column(
             modifier = Modifier
@@ -146,11 +155,11 @@ fun RecipeItem(recipe: Recipes, onClick: () -> Unit) {
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = "Servings: ${recipe.servings}",
+                text = "Servings : ${recipe.servings}",
                 fontSize = 14.sp
             )
             Text(
-                text = "Time needed: ${recipe.making_time_in_minutes} minutes",
+                text = "Time Needed : ${recipe.making_time_in_minutes} Minutes",
                 fontSize = 14.sp
             )
         }

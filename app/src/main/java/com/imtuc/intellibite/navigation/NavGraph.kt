@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.imtuc.intellibite.view.DetailRecipesActivity
+import com.imtuc.intellibite.view.HomeActivity
 import com.imtuc.intellibite.view.ImageClassificationActivity
 import com.imtuc.intellibite.view.ResultActivity
 import com.imtuc.intellibite.view.SplashScreenActivity
@@ -25,7 +26,7 @@ fun SetupNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.ImageClassification.route
+        startDestination = Screen.Splash.route
     ) {
         composable(
             route = Screen.Splash.route
@@ -103,6 +104,12 @@ fun SetupNavGraph(
             route = Screen.ImageClassification.route
         ) {
             ImageClassificationActivity(mainViewModel, lifecycleOwner)
+        }
+
+        composable(
+            route = Screen.Home.route
+        ) {
+            HomeActivity(navController)
         }
     }
 }

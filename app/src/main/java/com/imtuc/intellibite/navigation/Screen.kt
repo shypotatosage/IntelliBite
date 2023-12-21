@@ -28,5 +28,7 @@ sealed class Screen(val route: String) {
     }
 
     object ImageClassification:Screen(route = "image_classification")
+
+    object Home:Screen(route = "home")
 }
 

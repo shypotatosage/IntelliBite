@@ -32,6 +32,7 @@ import com.imtuc.intellibite.R
 import com.imtuc.intellibite.model.Recipes
 import com.imtuc.intellibite.viewmodel.MainViewModel
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextDecoration
 import com.imtuc.intellibite.model.Nutrition_Profiles
 import com.imtuc.intellibite.model.Recipe_Ingredients
 import com.imtuc.intellibite.model.Steps
@@ -146,42 +147,44 @@ fun DetailRecipesActivity(
                 Text("Servings : ${recipe_servings.value}", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             }
             item {
-                Text("Time Needed : ${recipe_making_time_in_minutes.value} minutes", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text("Time Needed : ${recipe_making_time_in_minutes.value} Minutes", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             }
             item {
-                Text("Composition", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text("Composition", fontSize = 20.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 4.dp))
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp, 0.dp, 0.dp, 0.dp),
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Text("- ${recipe_calories_per_portion.value} calories")
-                    Text("- ${recipe_fats_per_portion.value} fats")
-                    Text("- ${recipe_carbs_per_portion.value} carbs")
-                    Text("- ${recipe_proteins_per_portion.value} proteins")
+                    Text("Calories : ${recipe_calories_per_portion.value}")
+                    Text("Fat : ${recipe_fats_per_portion.value}g")
+                    Text("Carbohydrate : ${recipe_carbs_per_portion.value}g")
+                    Text("Protein : ${recipe_proteins_per_portion.value}g")
                 }
             }
             item {
-                Text("Nutrition Profile", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text("Nutrition Profile", fontSize = 20.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(vertical = 4.dp))
             }
+
             items(recipe_nutritions) { recipe_nutritions ->
                 DetailRecipeNutritions(nutrition = recipe_nutritions)
             }
+
             item {
-                Text("Ingredients", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text("Ingredients", fontSize = 20.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(vertical = 4.dp))
             }
+
             items(recipe_ingredients) { recipe_ingredients ->
                 DetailRecipeIngredients(ingredients = recipe_ingredients)
             }
-            item {
-                Text("Steps", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            }
-            var count = 1
 
-            items(recipe_steps) { recipe_steps ->
-                DetailRecipeSteps(steps = recipe_steps, count)
-                count += 1
+            item {
+                Text("Steps", fontSize = 20.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(vertical = 4.dp))
+            }
+
+            items(recipe_steps) { recipe_step ->
+                DetailRecipeSteps(steps = recipe_step, recipe_steps.indexOf(recipe_step) + 1)
             }
 
 
@@ -200,7 +203,7 @@ fun DetailRecipeNutritions(nutrition: Nutrition_Profiles) {
             .padding(16.dp, 0.dp, 0.dp, 0.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        Text("- ${nutrition.name}"
+        Text("• ${nutrition.name}"
 //                fontSize = 18.sp,
 //                fontWeight = FontWeight.Bold
         )
@@ -215,7 +218,7 @@ fun DetailRecipeIngredients(ingredients: Recipe_Ingredients) {
                 .padding(16.dp, 0.dp, 0.dp, 0.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Text("- ${ingredients.quantity}x ${ingredients.unit} ${ingredients.description} ${ingredients.name} ${ingredients.description_steps}"
+            Text("• ${ingredients.quantity} ${ingredients.unit} ${ingredients.description} ${ingredients.name} ${ingredients.description_steps}"
 //                fontSize = 18.sp,
 //                fontWeight = FontWeight.Bold
             )
@@ -227,10 +230,13 @@ fun DetailRecipeSteps(steps: Steps, count: Int) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp, 0.dp, 0.dp, 0.dp),
+            .padding(16.dp, 0.dp, 0.dp, 8.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        Text("Step ${count}")
+        Text(
+            "Step ${count}",
+            textDecoration = TextDecoration.Underline
+        )
         Text("${steps.description}")
     }
 }
