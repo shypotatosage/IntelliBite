@@ -276,6 +276,14 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun resetFruitVegetables() {
+        _fruitVegetablesError.value = "reset"
+    }
+
+    fun clearFruitVegetables() {
+        _fruitVegetablesError.value = ""
+    }
+
     val _ingredients: MutableLiveData<List<Ingredients>> by lazy {
         MutableLiveData<List<Ingredients>>()
     }

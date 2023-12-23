@@ -209,9 +209,12 @@ fun ImageClassificationActivity(mainViewModel: MainViewModel, lifecycleOwner: Li
             fruitVegetablesCaffeine.value = fruitVegetable.caffeine
 
             Log.e("Response", response.toString())
-        } else if (mainViewModel.fruitVegetablesError.value != "") {
+        } else if (mainViewModel.fruitVegetablesError.value != "reset" && mainViewModel.fruitVegetablesError.value != "") {
             Toast.makeText(context, mainViewModel.fruitVegetablesError.value, Toast.LENGTH_SHORT)
                 .show()
+        } else if (mainViewModel.fruitVegetablesError.value == "reset") {
+            fruitVegetablesName.value = ""
+            mainViewModel.clearFruitVegetables()
         }
     })
 
@@ -219,6 +222,7 @@ fun ImageClassificationActivity(mainViewModel: MainViewModel, lifecycleOwner: Li
         if (imagePredict.value != false) {
             var result = classifyImage(bitmap!!, context)
             Log.e("Result", result)
+            mainViewModel.resetFruitVegetables()
             mainViewModel.getFruitVegetables(result)
             imagePredict.value = false
         }
