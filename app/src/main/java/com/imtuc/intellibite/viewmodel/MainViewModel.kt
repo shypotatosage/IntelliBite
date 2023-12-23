@@ -164,12 +164,10 @@ class MainViewModel @Inject constructor(
                         var nutritions = item.getAsJsonArray("nutrition_profiles")
 
                         for (item in nutritions) {
-                            var nutrition_id = item.asJsonObject["id"].asString
-                            var nutrition_name = item.asJsonObject["name"].asString
+                            var nutrition_name = item.asString
 
 
                             var nutrition = Nutrition_Profiles(
-                                nutrition_id,
                                 nutrition_name,
                             )
 
@@ -306,13 +304,11 @@ class MainViewModel @Inject constructor(
 
 
                         for (item in arr) {
-                            var ingredient_id = item.asJsonObject["id"].asString
-                            var ingredient_name = item.asJsonObject["name"].asString
+                            var ingredient_name = item.asString
 
 
                             var ingredient = Ingredients(
-                                ingredient_id,
-                                ingredient_name,
+                                ingredient_name
                             )
 
                             tmpArrList.add(ingredient)
@@ -361,12 +357,10 @@ class MainViewModel @Inject constructor(
 
 
                         for (item in arr) {
-                            var nutrition_id = item.asJsonObject["id"].asString
-                            var nutrition_name = item.asJsonObject["name"].asString
+                            var nutrition_name = item.asString
 
 
                             var nutritionProfile = Nutrition_Profiles(
-                                nutrition_id,
                                 nutrition_name,
                             )
 

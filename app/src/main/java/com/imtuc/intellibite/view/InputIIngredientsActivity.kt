@@ -126,9 +126,9 @@ fun InputIngredientsActivity(
                     ingredient = ingredient,
                     onCheckedChange = { isChecked ->
                         if (isChecked) {
-                            ownedIngredients += "${ingredient.id},"
+                            ownedIngredients += "${ingredient.name},"
                         } else {
-                            ownedIngredients = ownedIngredients.replace("${ingredient.id},", "")
+                            ownedIngredients = ownedIngredients.replace("${ingredient.name},", "")
                         }
                     }
                 )

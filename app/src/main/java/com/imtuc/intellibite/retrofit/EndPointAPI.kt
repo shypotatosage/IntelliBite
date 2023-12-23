@@ -15,16 +15,16 @@ interface EndPointAPI {
         @Path("id") id: String,
         ): Response<JsonObject>
 
-    @GET("get-nutrition-profiles/")
+    @GET("get-nutrition-profiles")
     suspend fun getnutritionprofiles(
     ): Response<JsonObject>
 
-    @GET("get-ingredients/")
+    @GET("get-ingredients")
     suspend fun getingredients(
     ): Response<JsonObject>
 
     @FormUrlEncoded
-    @POST("get-recipes/")
+    @POST("get-recipes")
     suspend fun getrecipes(
         @Field("ingredients") ingredients: String,
         @Field("nutrition_profiles") nutrition_profiles: String

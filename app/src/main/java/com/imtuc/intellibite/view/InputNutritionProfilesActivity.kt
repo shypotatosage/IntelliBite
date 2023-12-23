@@ -129,9 +129,9 @@ fun InputNutritionProfilesActivity(
                         nutrition = nutrition,
                         onCheckedChange = { isChecked ->
                             if (isChecked) {
-                                ownedNutritionProfile += "${nutrition.id},"
+                                ownedNutritionProfile += "${nutrition.name},"
                             } else {
-                                ownedNutritionProfile = ownedNutritionProfile.replace("${nutrition.id},", "")
+                                ownedNutritionProfile = ownedNutritionProfile.replace("${nutrition.name},", "")
                             }
                         }
                     )
