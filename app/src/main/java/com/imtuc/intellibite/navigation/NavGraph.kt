@@ -97,7 +97,7 @@ fun SetupNavGraph(
                 }
             )
         ) {
-            DetailRecipesActivity(recipeid = it.arguments?.getString("detailRecipe").toString(), navController, lifecycleOwner, mainViewModel)
+            DetailRecipesActivity(name = it.arguments?.getString("detailRecipe").toString(), navController, lifecycleOwner, mainViewModel)
         }
 
         composable(

@@ -120,7 +120,7 @@ fun ResultActivity(
             items(availableRecipe) { recipe ->
                 RecipeItem(recipe = recipe, onClick = {
                     navController.navigate(Screen.DetailRecipe.passParam(
-                        detailRecipe = recipe.id
+                        detailRecipe = recipe.name
                     ))
                 })
             }

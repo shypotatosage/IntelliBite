@@ -33,13 +33,14 @@ import com.imtuc.intellibite.model.Recipes
 import com.imtuc.intellibite.viewmodel.MainViewModel
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
+import com.imtuc.intellibite.model.Ingredients
 import com.imtuc.intellibite.model.Nutrition_Profiles
 import com.imtuc.intellibite.model.Recipe_Ingredients
 import com.imtuc.intellibite.model.Steps
 
 @Composable
 fun DetailRecipesActivity(
-    recipeid: String,
+    name: String,
     navController: NavHostController,
     lifecycleOwner: LifecycleOwner,
     mainViewModel: MainViewModel
@@ -83,7 +84,7 @@ fun DetailRecipesActivity(
     }
 
     var recipe_ingredients = remember {
-        mutableStateListOf<Recipe_Ingredients>()
+        mutableStateListOf<Ingredients>()
     }
 
     var recipe_nutritions = remember {
@@ -94,11 +95,11 @@ fun DetailRecipesActivity(
         mutableStateListOf<Steps>()
     }
 
-    mainViewModel.getDetailRecipe(recipeid)
+    mainViewModel.getDetailRecipe(name)
 
     mainViewModel.detailRecipe.observe(lifecycleOwner, Observer{
             response ->
-        if (response.id.isNotEmpty()) {
+        if (response.name.isNotEmpty()) {
             recipe_name.value = response.name
             recipe_making_time_in_minutes.value = response.making_time_in_minutes
             recipe_calories_per_portion.value = response.calories_per_portion
@@ -124,7 +125,7 @@ fun DetailRecipesActivity(
     })
 
     LaunchedEffect(key1 = true) {
-        mainViewModel.getDetailRecipe(recipeid)
+        mainViewModel.getDetailRecipe(name)
     }
 
     Box(
@@ -211,14 +212,14 @@ fun DetailRecipeNutritions(nutrition: Nutrition_Profiles) {
 
 }
 @Composable
-fun DetailRecipeIngredients(ingredients: Recipe_Ingredients) {
+fun DetailRecipeIngredients(ingredients: Ingredients) {
     Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp, 0.dp, 0.dp, 0.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Text("• ${ingredients.quantity} ${ingredients.unit} ${ingredients.description} ${ingredients.name} ${ingredients.description_steps}"
+            Text("• ${ingredients.name}"
 //                fontSize = 18.sp,
 //                fontWeight = FontWeight.Bold
             )

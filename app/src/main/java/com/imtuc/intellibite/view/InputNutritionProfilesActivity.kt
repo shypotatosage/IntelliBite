@@ -87,26 +87,27 @@ fun InputNutritionProfilesActivity(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .padding(top = 100.dp),
+            .padding(top = 0.dp),
     ) {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.allergy),
-                contentDescription = "Nutrition Profiles"
-            )
-        }
-
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .padding(top = 200.dp, start = 16.dp, end = 16.dp)
+                .padding(top = 0.dp, start = 16.dp, end = 16.dp)
         ) {
             item {
+                Spacer(modifier = Modifier.height(64.dp))
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.allergy),
+                        contentDescription = "Nutrition Profiles"
+                    )
+                }
+                Spacer(modifier = Modifier.height(24.dp))
                 Text(
                     "Nutrition Profiles",
                     fontSize = 20.sp,
@@ -155,6 +156,8 @@ fun InputNutritionProfilesActivity(
                 ) {
                     Text("Next", color = Color.White)
                 }
+
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }

@@ -1,6 +1,8 @@
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -89,29 +91,36 @@ fun InputIngredientsActivity(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .padding(top = 100.dp)
+            .padding(top = 0.dp)
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.vegetables),
-            contentDescription = "Back",
-            modifier = Modifier
-                .width(250.dp)
-                .align(Alignment.TopCenter)
-        )
-
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .padding(top = 200.dp, start = 16.dp, end = 16.dp)
+                .padding(top = 0.dp, start = 16.dp, end = 16.dp)
         ) {
             item {
+                Spacer(modifier = Modifier.height(64.dp))
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.vegetables),
+                        contentDescription = "Back",
+                        modifier = Modifier
+                            .width(200.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(24.dp))
                 Text(
                     "Ingredients",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(bottom = 5.dp)
                 )
                 Text(
@@ -157,6 +166,8 @@ fun InputIngredientsActivity(
                 ) {
                     Text("Next", color = Color.White)
                 }
+
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }

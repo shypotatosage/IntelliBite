@@ -10,9 +10,9 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface EndPointAPI {
-    @GET("get-recipe/{id}")
+    @GET("get-detailrecipe/{name}")
     suspend fun getdetailrecipe(
-        @Path("id") id: String,
+        @Path("name") id: String,
         ): Response<JsonObject>
 
     @GET("get-nutrition-profiles")
@@ -23,11 +23,10 @@ interface EndPointAPI {
     suspend fun getingredients(
     ): Response<JsonObject>
 
-    @FormUrlEncoded
-    @POST("get-recipes")
+    @GET("get-recipes/{ingredients}/{nutrition_profiles}")
     suspend fun getrecipes(
-        @Field("ingredients") ingredients: String,
-        @Field("nutrition_profiles") nutrition_profiles: String
+        @Path("ingredients") ingredients: String,
+        @Path("nutrition_profiles") nutrition_profiles: String
     ): Response<JsonObject>
 
     @GET("get-fruitvegetables/{name}")

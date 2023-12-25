@@ -47,37 +47,18 @@ class MainViewModel @Inject constructor(
                     if (!response.body()!!.get("data").isJsonNull) {
                         val arr: JsonArray = response.body()!!.getAsJsonArray("data")
 
-
                         for (item in arr) {
-                            var recipe_id = item.asJsonObject["id"].asString
-                            var recipe_name = item.asJsonObject["name"].asString
+                            var recipe_name = item.asJsonObject["recipe_name"].asString
                             var recipe_making_time =
-                                item.asJsonObject["making_time_in_minutes"].asInt
+                                item.asJsonObject["timetotal"].asInt
                             var recipe_servings = item.asJsonObject["servings"].asInt
-                            var recipe_calories = item.asJsonObject["calories_per_portion"].asInt
-                            var recipe_fats = item.asJsonObject["fats_per_portion"].asInt
-                            var recipe_proteins = item.asJsonObject["fats_per_portion"].asInt
-                            var recipe_carbs = item.asJsonObject["proteins_per_portion"].asInt
-
-                            var ingredientsList = arrayListOf<Recipe_Ingredients>()
-
-                            var nutritionsList = arrayListOf<Nutrition_Profiles>()
-
-                            var stepsList = arrayListOf<Steps>()
 
                             var recipe = Recipes(
-                                recipe_id,
                                 recipe_name,
                                 recipe_making_time,
-                                recipe_servings,
-                                recipe_calories,
-                                recipe_fats,
-                                recipe_proteins,
-                                recipe_carbs,
-                                ingredientsList,
-                                nutritionsList,
-                                stepsList
+                                recipe_servings
                             )
+
                             tmpArrList.add(recipe)
                         }
                     }
@@ -116,40 +97,23 @@ class MainViewModel @Inject constructor(
                 if (response.body()?.get("message")?.asString == "success") {
                     var item = response.body()!!.getAsJsonObject("data")
 
-                    var recipe_id = item.asJsonObject["id"].asString
-                    var recipe_name = item.asJsonObject["name"].asString
-                    var recipe_making_time = item.asJsonObject["making_time_in_minutes"].asInt
+                    var recipe_name = item.asJsonObject["recipe_name"].asString
+                    var recipe_making_time = item.asJsonObject["timetotal"].asInt
                     var recipe_servings = item.asJsonObject["servings"].asInt
-                    var recipe_calories = item.asJsonObject["calories_per_portion"].asInt
-                    var recipe_fats = item.asJsonObject["fats_per_portion"].asInt
-                    var recipe_proteins = item.asJsonObject["proteins_per_portion"].asInt
-                    var recipe_carbs = item.asJsonObject["carbs_per_portion"].asInt
+                    var recipe_calories = item.asJsonObject["calories"].asInt
+                    var recipe_fats = item.asJsonObject["fat"].asInt
+                    var recipe_proteins = item.asJsonObject["protein"].asInt
+                    var recipe_carbs = item.asJsonObject["carbohydrate"].asInt
 
-                    var ingredientsList = arrayListOf<Recipe_Ingredients>()
+                    var ingredientsList = arrayListOf<Ingredients>()
                     ingredientsList.clear()
 
                     if (!item.get("ingredients").isJsonNull) {
-                        var ingredients = item.getAsJsonArray("ingredients")
+                        var ingredients = item.asJsonObject["ingredients_detailed"].asString.split("$").toTypedArray()
 
-                        for (item in ingredients) {
-                            var ingredient_id = item.asJsonObject["id"].asString
-                            var ingredient_quantity = item.asJsonObject["quantity"].asInt
-                            var ingredient_description = item.asJsonObject["description"].asString
-                            var ingredient_description_step: String? = item.asJsonObject["description_steps"]?.asString
-                            var ingredient_name = item.asJsonObject["name"].asString
-                            var ingredient_unit = item.asJsonObject["unit"].asString
-                            var ingredient_recipe_id = item.asJsonObject["recipe_id"].asInt
-                            var ingredient_ingredient_id = item.asJsonObject["ingredient_id"].asInt
+                        for (ingredient_name in ingredients) {
 
-
-                            var ingredient = Recipe_Ingredients(
-                                ingredient_id,
-                                ingredient_quantity,
-                                ingredient_description,
-                                ingredient_description_step,
-                                ingredient_unit,
-                                ingredient_recipe_id,
-                                ingredient_ingredient_id,
+                            var ingredient = Ingredients(
                                 ingredient_name,
                             )
 
@@ -161,11 +125,9 @@ class MainViewModel @Inject constructor(
                     nutritionsList.clear()
 
                     if (!item.get("nutrition_profiles").isJsonNull) {
-                        var nutritions = item.getAsJsonArray("nutrition_profiles")
+                        var nutritions = item.asJsonObject["nutrition_profiles"].asString.split("$").toTypedArray()
 
-                        for (item in nutritions) {
-                            var nutrition_name = item.asString
-
+                        for (nutrition_name in nutritions) {
 
                             var nutrition = Nutrition_Profiles(
                                 nutrition_name,
@@ -178,15 +140,11 @@ class MainViewModel @Inject constructor(
                     stepsList.clear()
 
                     if (!item.get("steps").isJsonNull) {
-                        var steps = item.getAsJsonArray("steps")
+                        var steps = item.asJsonObject["steps"].asString.split("$").toTypedArray()
 
-                        for (item in steps) {
-                            var step_id = item.asJsonObject["id"].asString
-                            var step_description = item.asJsonObject["description"].asString
-
+                        for (step_description in steps) {
 
                             var steps = Steps(
-                                step_id,
                                 step_description,
                             )
 
@@ -195,7 +153,6 @@ class MainViewModel @Inject constructor(
                     }
 
                     _detailRecipe.value = Recipes(
-                        recipe_id,
                         recipe_name,
                         recipe_making_time,
                         recipe_servings,
